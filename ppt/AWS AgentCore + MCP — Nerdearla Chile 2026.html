@@ -1,0 +1,720 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AWS AgentCore + MCP — Nerdearla Chile 2026 - Pablo Inchausti</title>
+<link href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=Syne:wght@400;600;800&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --aws-orange: #FF9900;
+    --aws-dark: #0A0A0F;
+    --aws-navy: #0D1B2A;
+    --aws-blue: #1A8FFF;
+    --aws-teal: #00D4AA;
+    --aws-purple: #8B5CF6;
+    --text: #E8EDF2;
+    --text-dim: #7A8CA0;
+    --border: rgba(255,153,0,0.2);
+    --card-bg: rgba(13,27,42,0.8);
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    font-family: 'Syne', sans-serif;
+    background: var(--aws-dark);
+    color: var(--text);
+    min-height: 100vh;
+    overflow-x: hidden;
+  }
+
+  /* BG Grid */
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background-image:
+      linear-gradient(rgba(255,153,0,0.04) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(255,153,0,0.04) 1px, transparent 1px);
+    background-size: 40px 40px;
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  .container { max-width: 1200px; margin: 0 auto; padding: 0 2rem; position: relative; z-index: 1; }
+
+  /* HEADER */
+  header {
+    padding: 3rem 0 2rem;
+    border-bottom: 1px solid var(--border);
+  }
+  .badge {
+    display: inline-block;
+    background: var(--aws-orange);
+    color: #000;
+    font-family: 'Space Mono', monospace;
+    font-size: 0.7rem;
+    padding: 0.3rem 0.8rem;
+    letter-spacing: 0.1em;
+    margin-bottom: 1rem;
+  }
+  h1 {
+    font-size: clamp(2rem, 5vw, 4rem);
+    font-weight: 800;
+    line-height: 1.05;
+    letter-spacing: -0.03em;
+  }
+  h1 span { color: var(--aws-orange); }
+  .subtitle {
+    color: var(--text-dim);
+    font-size: 1rem;
+    margin-top: 0.5rem;
+    font-family: 'Space Mono', monospace;
+  }
+  .meta {
+    display: flex;
+    gap: 2rem;
+    margin-top: 1.5rem;
+    flex-wrap: wrap;
+  }
+  .meta-item {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-family: 'Space Mono', monospace;
+    font-size: 0.75rem;
+    color: var(--text-dim);
+  }
+  .meta-item .dot {
+    width: 8px; height: 8px;
+    background: var(--aws-teal);
+    border-radius: 50%;
+    animation: pulse 2s infinite;
+  }
+  @keyframes pulse {
+    0%,100% { opacity: 1; transform: scale(1); }
+    50% { opacity: 0.5; transform: scale(0.8); }
+  }
+
+  /* SECTION */
+  section { padding: 3rem 0; }
+  .section-label {
+    font-family: 'Space Mono', monospace;
+    font-size: 0.65rem;
+    color: var(--aws-orange);
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    margin-bottom: 1rem;
+  }
+  h2 { font-size: 1.8rem; font-weight: 800; margin-bottom: 2rem; }
+
+  /* TALK FLOW */
+  .talk-flow {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 1px;
+    border: 1px solid var(--border);
+  }
+  .flow-step {
+    background: var(--card-bg);
+    padding: 1.5rem;
+    position: relative;
+    transition: background 0.2s;
+  }
+  .flow-step:hover { background: rgba(255,153,0,0.07); }
+  .flow-num {
+    font-family: 'Space Mono', monospace;
+    font-size: 2rem;
+    font-weight: 700;
+    color: rgba(255,153,0,0.2);
+    line-height: 1;
+    margin-bottom: 0.5rem;
+  }
+  .flow-title { font-size: 0.95rem; font-weight: 600; margin-bottom: 0.3rem; }
+  .flow-time {
+    font-family: 'Space Mono', monospace;
+    font-size: 0.65rem;
+    color: var(--aws-teal);
+  }
+  .flow-desc { font-size: 0.8rem; color: var(--text-dim); margin-top: 0.5rem; line-height: 1.5; }
+
+  /* ARCHITECTURE */
+  .arch-diagram {
+    border: 1px solid var(--border);
+    background: var(--card-bg);
+    padding: 2.5rem;
+    position: relative;
+    overflow: hidden;
+  }
+  .arch-diagram::before {
+    content: 'ARCHITECTURE';
+    position: absolute;
+    top: 1rem; right: 1.5rem;
+    font-family: 'Space Mono', monospace;
+    font-size: 0.6rem;
+    color: rgba(255,153,0,0.3);
+    letter-spacing: 0.2em;
+  }
+
+  .arch-row {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    margin: 0.75rem 0;
+    flex-wrap: wrap;
+  }
+
+  .arch-box {
+    padding: 0.7rem 1.2rem;
+    border: 1px solid;
+    font-family: 'Space Mono', monospace;
+    font-size: 0.72rem;
+    text-align: center;
+    position: relative;
+    min-width: 120px;
+  }
+  .arch-box.user    { border-color: var(--text-dim); color: var(--text); background: rgba(255,255,255,0.04); }
+  .arch-box.runtime { border-color: var(--aws-orange); color: var(--aws-orange); background: rgba(255,153,0,0.08); }
+  .arch-box.gateway { border-color: var(--aws-blue); color: var(--aws-blue); background: rgba(26,143,255,0.08); }
+  .arch-box.mcp     { border-color: var(--aws-teal); color: var(--aws-teal); background: rgba(0,212,170,0.08); }
+  .arch-box.memory  { border-color: var(--aws-purple); color: var(--aws-purple); background: rgba(139,92,246,0.08); }
+  .arch-box.tool    { border-color: rgba(255,255,255,0.3); color: var(--text-dim); background: rgba(255,255,255,0.03); font-size: 0.65rem; min-width: 90px; padding: 0.5rem 0.8rem; }
+
+  .arch-label {
+    font-family: 'Space Mono', monospace;
+    font-size: 0.6rem;
+    color: rgba(255,255,255,0.15);
+    text-align: center;
+    margin: 0.3rem 0;
+    letter-spacing: 0.1em;
+  }
+
+  .arch-arrow {
+    font-size: 1rem;
+    color: var(--aws-orange);
+    opacity: 0.5;
+  }
+
+  .arch-group {
+    display: flex;
+    gap: 0.5rem;
+    align-items: center;
+    flex-wrap: wrap;
+    justify-content: center;
+  }
+
+  .arch-divider {
+    height: 1px;
+    background: var(--border);
+    margin: 1rem 0;
+  }
+
+  /* CODE BLOCKS */
+  .code-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(340px, 1fr));
+    gap: 1px;
+    border: 1px solid var(--border);
+  }
+  .code-panel {
+    background: var(--card-bg);
+    padding: 1.5rem;
+  }
+  .code-panel-title {
+    font-family: 'Space Mono', monospace;
+    font-size: 0.65rem;
+    color: var(--aws-orange);
+    letter-spacing: 0.1em;
+    margin-bottom: 1rem;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+  }
+  .code-panel-title::before {
+    content: '▶';
+    color: var(--aws-teal);
+    font-size: 0.5rem;
+  }
+  pre {
+    font-family: 'Space Mono', monospace;
+    font-size: 0.72rem;
+    line-height: 1.7;
+    color: #A8C8E8;
+    overflow-x: auto;
+  }
+  .c-keyword  { color: #FF9900; }
+  .c-string   { color: #00D4AA; }
+  .c-comment  { color: #4A6070; font-style: italic; }
+  .c-func     { color: #8B5CF6; }
+  .c-var      { color: #E8EDF2; }
+  .c-import   { color: #1A8FFF; }
+  .c-dec      { color: #FF9900; }
+  .c-num      { color: #FF6B6B; }
+
+  /* DEMO SCENARIO */
+  .scenario {
+    background: rgba(0,212,170,0.05);
+    border: 1px solid rgba(0,212,170,0.2);
+    padding: 2rem;
+    margin: 2rem 0;
+  }
+  .scenario-title {
+    font-size: 1.2rem;
+    font-weight: 800;
+    color: var(--aws-teal);
+    margin-bottom: 0.5rem;
+  }
+  .scenario-desc { color: var(--text-dim); font-size: 0.9rem; line-height: 1.7; }
+
+  .agent-flow {
+    display: flex;
+    gap: 0;
+    margin-top: 1.5rem;
+    overflow-x: auto;
+  }
+  .agent-step {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    min-width: 140px;
+  }
+  .agent-step-box {
+    width: 120px;
+    padding: 0.8rem;
+    border: 1px solid rgba(0,212,170,0.3);
+    background: rgba(0,212,170,0.05);
+    text-align: center;
+    font-family: 'Space Mono', monospace;
+    font-size: 0.62rem;
+    color: var(--aws-teal);
+    line-height: 1.4;
+  }
+  .agent-step-arrow {
+    width: 30px;
+    text-align: center;
+    color: var(--aws-orange);
+    font-size: 1.2rem;
+    align-self: center;
+    padding-top: 0.5rem;
+  }
+  .agent-step-label {
+    font-size: 0.6rem;
+    color: var(--text-dim);
+    text-align: center;
+    margin-top: 0.4rem;
+    font-family: 'Space Mono', monospace;
+    max-width: 110px;
+  }
+
+  /* TIPS */
+  .tips {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 1px;
+    border: 1px solid var(--border);
+    margin-top: 1rem;
+  }
+  .tip {
+    background: var(--card-bg);
+    padding: 1.2rem 1.5rem;
+    display: flex;
+    gap: 1rem;
+    align-items: flex-start;
+  }
+  .tip-icon { font-size: 1.3rem; flex-shrink: 0; }
+  .tip-content h4 { font-size: 0.85rem; margin-bottom: 0.3rem; }
+  .tip-content p { font-size: 0.75rem; color: var(--text-dim); line-height: 1.5; }
+
+  /* FOOTER */
+  footer {
+    border-top: 1px solid var(--border);
+    padding: 2rem 0;
+    margin-top: 3rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 1rem;
+  }
+  footer .left { font-family: 'Space Mono', monospace; font-size: 0.7rem; color: var(--text-dim); }
+  footer .right { font-family: 'Space Mono', monospace; font-size: 0.7rem; color: var(--aws-orange); }
+
+  .tag {
+    display: inline-block;
+    border: 1px solid rgba(255,153,0,0.4);
+    color: var(--aws-orange);
+    font-family: 'Space Mono', monospace;
+    font-size: 0.65rem;
+    padding: 0.2rem 0.6rem;
+    margin: 0.2rem;
+  }
+</style>
+</head>
+<body>
+
+<div class="container">
+
+  <!-- HEADER -->
+  <header>
+    <div class="badge">NERDEARLA CHILE 2026 · AWS COMMUNITY - Pablo Inchausti</div>
+    <h1>AWS <span>AgentCore</span><br>+ MCP Demo</h1>
+    <p class="subtitle">// Level 200 · 30 min · Hands-on Demo</p>
+    <div class="meta">
+      <div class="meta-item"><span class="dot"></span> Amazon Bedrock AgentCore</div>
+      <div class="meta-item"><span class="dot"></span> Model Context Protocol</div>
+      <div class="meta-item"><span class="dot"></span> Multi-Agent Orchestration</div>
+    </div>
+  </header>
+
+  <!-- TALK STRUCTURE -->
+  <section>
+    <div class="section-label">// 01 — ESTRUCTURA DE LA CHARLA</div>
+    <h2>Talk Flow (30 min)</h2>
+    <div class="talk-flow">
+      <div class="flow-step">
+        <div class="flow-num">01</div>
+        <div class="flow-title">El Problema</div>
+        <div class="flow-time">0:00 — 0:04</div>
+        <div class="flow-desc">¿Por qué los agentes de IA son difíciles de escalar? El problema de herramientas, contexto y orquestación.</div>
+      </div>
+      <div class="flow-step">
+        <div class="flow-num">02</div>
+        <div class="flow-title">MCP en 2 min</div>
+        <div class="flow-time">0:04 — 0:08</div>
+        <div class="flow-desc">Model Context Protocol: el "USB-C" de los agentes de IA. Cómo estandariza el acceso a herramientas.</div>
+      </div>
+      <div class="flow-step">
+        <div class="flow-num">03</div>
+        <div class="flow-title">AgentCore Overview</div>
+        <div class="flow-time">0:08 — 0:13</div>
+        <div class="flow-desc">Runtime, Gateway, Memory, Identity, Observability. La plataforma completa para agentes en producción.</div>
+      </div>
+      <div class="flow-step">
+        <div class="flow-num">04</div>
+        <div class="flow-title">DEMO LIVE 🔥</div>
+        <div class="flow-time">0:13 — 0:25</div>
+        <div class="flow-desc">Agente de soporte técnico multi-herramienta usando AgentCore Runtime + Gateway con MCP servers reales.</div>
+      </div>
+      <div class="flow-step">
+        <div class="flow-num">05</div>
+        <div class="flow-title">Q&amp;A + Recursos</div>
+        <div class="flow-time">0:25 — 0:30</div>
+        <div class="flow-desc">Links, GitHub repo, próximos pasos. Invitar a la comunidad AWS Chile.</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- DEMO SCENARIO -->
+  <section>
+    <div class="section-label">// 02 — DEMO SCENARIO</div>
+    <h2>El Demo: "Asistente DevOps Inteligente"</h2>
+    <div class="scenario">
+      <div class="scenario-title">🤖 DevOps Assistant — Agente Multi-Herramienta</div>
+      <div class="scenario-desc">
+        Un agente de soporte DevOps que recibe una queja de usuario ("la app está caída"), 
+        orquesta múltiples agentes especializados a través de MCP tools, y entrega un diagnóstico completo 
+        con acciones recomendadas. Perfecto para mostrar el poder de AgentCore en producción.
+      </div>
+      <div class="agent-flow">
+        <div class="agent-step">
+          <div class="agent-step-box">👤 USER<br>INPUT</div>
+          <div class="agent-step-label">"La app está caída"</div>
+        </div>
+        <div class="agent-step-arrow">→</div>
+        <div class="agent-step">
+          <div class="agent-step-box">🧠 ORCHES-<br>TRATOR<br>AGENT</div>
+          <div class="agent-step-label">AgentCore Runtime</div>
+        </div>
+        <div class="agent-step-arrow">→</div>
+        <div class="agent-step">
+          <div class="agent-step-box">📊 METRICS<br>AGENT</div>
+          <div class="agent-step-label">MCP → CloudWatch</div>
+        </div>
+        <div class="agent-step-arrow">→</div>
+        <div class="agent-step">
+          <div class="agent-step-box">📋 LOGS<br>AGENT</div>
+          <div class="agent-step-label">MCP → CloudWatch Logs</div>
+        </div>
+        <div class="agent-step-arrow">→</div>
+        <div class="agent-step">
+          <div class="agent-step-box">🔧 ACTION<br>AGENT</div>
+          <div class="agent-step-label">MCP → Lambda / SSM</div>
+        </div>
+        <div class="agent-step-arrow">→</div>
+        <div class="agent-step">
+          <div class="agent-step-box">✅ REPORT<br>OUTPUT</div>
+          <div class="agent-step-label">Diagnóstico + Fix</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ARCHITECTURE -->
+  <section>
+    <div class="section-label">// 03 — ARQUITECTURA</div>
+    <h2>Demo Architecture</h2>
+    <div class="arch-diagram">
+
+      <!-- Layer 1: User -->
+      <div class="arch-label">CLIENTE / KIRO IDE</div>
+      <div class="arch-row">
+        <div class="arch-box user">Kiro / Claude Code<br><span style="opacity:0.5;font-size:0.6rem">MCP Client</span></div>
+      </div>
+
+      <div class="arch-row"><div class="arch-arrow">↓ MCP Protocol</div></div>
+
+      <!-- Layer 2: AgentCore Gateway -->
+      <div class="arch-label">AGENTCORE GATEWAY — Unified MCP Interface</div>
+      <div class="arch-row">
+        <div class="arch-box gateway">AgentCore Gateway<br><span style="opacity:0.5;font-size:0.6rem">Auth · Routing · Discovery</span></div>
+      </div>
+
+      <div class="arch-row"><div class="arch-arrow">↓ Routes to</div></div>
+
+      <!-- Layer 3: Agents -->
+      <div class="arch-label">AGENTCORE RUNTIME — Agent Execution</div>
+      <div class="arch-row">
+        <div class="arch-box runtime">Orchestrator<br>Agent</div>
+        <div class="arch-arrow">→</div>
+        <div class="arch-box runtime">Metrics<br>Agent</div>
+        <div class="arch-arrow">+</div>
+        <div class="arch-box runtime">Logs<br>Agent</div>
+        <div class="arch-arrow">+</div>
+        <div class="arch-box runtime">Action<br>Agent</div>
+      </div>
+
+      <div class="arch-divider"></div>
+
+      <!-- Layer 4: MCP Tools -->
+      <div class="arch-label">MCP TOOLS — Via AgentCore Gateway Targets</div>
+      <div class="arch-row">
+        <div class="arch-group">
+          <div class="arch-box mcp">MCP Server<br>CloudWatch</div>
+          <div class="arch-box mcp">MCP Server<br>CW Logs</div>
+          <div class="arch-box mcp">MCP Server<br>Lambda</div>
+          <div class="arch-box mcp">MCP Server<br>SSM</div>
+        </div>
+      </div>
+
+      <div class="arch-divider"></div>
+
+      <!-- Layer 5: Support -->
+      <div class="arch-label">SOPORTE TRANSVERSAL</div>
+      <div class="arch-row">
+        <div class="arch-box memory">AgentCore<br>Memory</div>
+        <div class="arch-box memory">AgentCore<br>Identity</div>
+        <div class="arch-box memory">AgentCore<br>Observability</div>
+        <div class="arch-box memory">Amazon<br>Bedrock LLM</div>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- CODE -->
+  <section>
+    <div class="section-label">// 04 — CÓDIGO DEL DEMO</div>
+    <h2>Demo Code Snippets</h2>
+    <div class="code-grid">
+
+      <div class="code-panel">
+        <div class="code-panel-title">STEP 1 — MCP SERVER (Tool para CloudWatch)</div>
+        <pre><span class="c-comment"># mcp_cloudwatch_server.py</span>
+<span class="c-import">from</span> <span class="c-var">mcp.server.fastmcp</span> <span class="c-import">import</span> <span class="c-var">FastMCP</span>
+<span class="c-import">import</span> <span class="c-var">boto3</span>
+
+<span class="c-var">mcp</span> = <span class="c-func">FastMCP</span>(<span class="c-string">"cloudwatch-tools"</span>)
+<span class="c-var">cw</span> = <span class="c-var">boto3</span>.<span class="c-func">client</span>(<span class="c-string">"cloudwatch"</span>)
+
+<span class="c-dec">@mcp.tool()</span>
+<span class="c-keyword">async def</span> <span class="c-func">get_metric_alarm_status</span>(
+    <span class="c-var">service_name</span>: <span class="c-var">str</span>
+) -> <span class="c-var">dict</span>:
+    <span class="c-string">"""Obtiene el estado de alarmas para un servicio."""</span>
+    <span class="c-var">response</span> = <span class="c-var">cw</span>.<span class="c-func">describe_alarms</span>(
+        <span class="c-var">AlarmNamePrefix</span>=<span class="c-var">service_name</span>,
+        <span class="c-var">StateValue</span>=<span class="c-string">"ALARM"</span>
+    )
+    <span class="c-keyword">return</span> {
+        <span class="c-string">"alarms"</span>: <span class="c-var">response</span>[<span class="c-string">"MetricAlarms"</span>],
+        <span class="c-string">"count"</span>: <span class="c-func">len</span>(<span class="c-var">response</span>[<span class="c-string">"MetricAlarms"</span>])
+    }
+
+<span class="c-comment"># Deployar en AgentCore Runtime:</span>
+<span class="c-comment"># agentcore configure -e mcp_cloudwatch_server.py \</span>
+<span class="c-comment">#   --protocol MCP --name cloudwatch-mcp</span>
+<span class="c-comment"># agentcore launch</span></pre>
+      </div>
+
+      <div class="code-panel">
+        <div class="code-panel-title">STEP 2 — AGENTCORE GATEWAY (Registrar MCP Targets)</div>
+        <pre><span class="c-comment"># setup_gateway.py</span>
+<span class="c-import">import</span> <span class="c-var">boto3</span>
+
+<span class="c-var">client</span> = <span class="c-var">boto3</span>.<span class="c-func">client</span>(<span class="c-string">"bedrock-agentcore-control"</span>)
+
+<span class="c-comment"># 1. Crear el Gateway</span>
+<span class="c-var">gateway</span> = <span class="c-var">client</span>.<span class="c-func">create_gateway</span>(
+    <span class="c-var">name</span>=<span class="c-string">"devops-gateway"</span>,
+    <span class="c-var">authorizerType</span>=<span class="c-string">"CUSTOM_JWT"</span>,
+    <span class="c-var">authorizerConfiguration</span>={
+        <span class="c-string">"customJWTAuthorizer"</span>: {
+            <span class="c-string">"allowedClients"</span>: [<span class="c-var">COGNITO_CLIENT_ID</span>],
+            <span class="c-string">"discoveryUrl"</span>: <span class="c-var">COGNITO_DISCOVERY_URL</span>
+        }
+    }
+)
+
+<span class="c-comment"># 2. Agregar MCP Server como target</span>
+<span class="c-var">target</span> = <span class="c-var">client</span>.<span class="c-func">create_gateway_target</span>(
+    <span class="c-var">gatewayIdentifier</span>=<span class="c-var">gateway</span>[<span class="c-string">"gatewayId"</span>],
+    <span class="c-var">name</span>=<span class="c-string">"cloudwatch-mcp-target"</span>,
+    <span class="c-var">targetConfiguration</span>={
+        <span class="c-string">"mcp"</span>: {
+            <span class="c-string">"endpoint"</span>: {
+                <span class="c-string">"url"</span>: <span class="c-var">AGENTCORE_RUNTIME_URL</span>
+            }
+        }
+    }
+)</pre>
+      </div>
+
+      <div class="code-panel">
+        <div class="code-panel-title">STEP 3 — ORCHESTRATOR AGENT (Strands + AgentCore)</div>
+        <pre><span class="c-comment"># orchestrator_agent.py</span>
+<span class="c-import">from</span> <span class="c-var">strands</span> <span class="c-import">import</span> <span class="c-var">Agent</span>
+<span class="c-import">from</span> <span class="c-var">strands.tools.mcp</span> <span class="c-import">import</span> <span class="c-var">MCPClient</span>
+<span class="c-import">from</span> <span class="c-var">bedrock_agentcore.runtime</span> <span class="c-import">import</span> <span class="c-var">BedrockAgentCoreApp</span>
+
+<span class="c-var">app</span> = <span class="c-func">BedrockAgentCoreApp</span>()
+
+<span class="c-comment"># Conectar al Gateway como MCP client</span>
+<span class="c-var">mcp_client</span> = <span class="c-func">MCPClient</span>(
+    <span class="c-var">endpoint</span>=<span class="c-var">GATEWAY_ENDPOINT</span>,
+    <span class="c-var">token</span>=<span class="c-var">ACCESS_TOKEN</span>
+)
+
+<span class="c-var">agent</span> = <span class="c-func">Agent</span>(
+    <span class="c-var">model</span>=<span class="c-string">"us.amazon.nova-pro-v1:0"</span>,
+    <span class="c-var">system_prompt</span>=<span class="c-string">"""Eres un experto DevOps.
+    Cuando detectes problemas, usa las herramientas 
+    MCP para diagnosticar y resolver. Siempre 
+    explica tus acciones en español."""</span>,
+    <span class="c-var">tools</span>=<span class="c-var">mcp_client</span>.<span class="c-func">list_tools</span>()
+)
+
+<span class="c-dec">@app.entrypoint</span>
+<span class="c-keyword">async def</span> <span class="c-func">handle</span>(<span class="c-var">payload</span>: <span class="c-var">dict</span>):
+    <span class="c-var">result</span> = <span class="c-keyword">await</span> <span class="c-var">agent</span>.<span class="c-func">invoke_async</span>(
+        <span class="c-var">payload</span>[<span class="c-string">"user_message"</span>]
+    )
+    <span class="c-keyword">return</span> {<span class="c-string">"response"</span>: <span class="c-var">result</span>.<span class="c-var">message</span>}</pre>
+      </div>
+
+      <div class="code-panel">
+        <div class="code-panel-title">STEP 4 — DEMO CLIENT (Invoke the Agent)</div>
+        <pre><span class="c-comment"># demo_client.py — lo que corres en vivo</span>
+<span class="c-import">import</span> <span class="c-var">boto3</span>
+<span class="c-import">import</span> <span class="c-var">json</span>
+
+<span class="c-var">runtime</span> = <span class="c-var">boto3</span>.<span class="c-func">client</span>(<span class="c-string">"bedrock-agentcore"</span>)
+
+<span class="c-comment"># 🔴 LIVE DEMO — ejecutar esto en pantalla</span>
+<span class="c-var">response</span> = <span class="c-var">runtime</span>.<span class="c-func">invoke_agent_runtime</span>(
+    <span class="c-var">agentRuntimeArn</span>=<span class="c-var">AGENT_ARN</span>,
+    <span class="c-var">sessionId</span>=<span class="c-string">"nerdearla-demo-01"</span>,
+    <span class="c-var">payload</span>=<span class="c-var">json</span>.<span class="c-func">dumps</span>({
+        <span class="c-string">"user_message"</span>: <span class="c-string">"Hola! Nuestro servicio \
+            'checkout-api' está dando errores \
+            500 desde hace 10 minutos. \
+            Puedes investigar y ayudarme?"</span>
+    })
+)
+
+<span class="c-comment"># Output en tiempo real (streaming)</span>
+<span class="c-keyword">for</span> <span class="c-var">chunk</span> <span class="c-keyword">in</span> <span class="c-var">response</span>[<span class="c-string">"body"</span>]:
+    <span class="c-func">print</span>(<span class="c-var">chunk</span>[<span class="c-string">"chunk"</span>][<span class="c-string">"bytes"</span>].<span class="c-func">decode</span>(), 
+          <span class="c-var">end</span>=<span class="c-string">""</span>, <span class="c-var">flush</span>=<span class="c-keyword">True</span>)</pre>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- DEMO TIPS -->
+  <section>
+    <div class="section-label">// 05 — TIPS PARA EL DEMO EN VIVO</div>
+    <h2>Pro Tips 🎤</h2>
+    <div class="tips">
+      <div class="tip">
+        <div class="tip-icon">🧪</div>
+        <div class="tip-content">
+          <h4>Pre-deploy todo</h4>
+          <p>Haz deploy de los agentes y MCP servers el día antes. En el demo, solo muestra el invoke y el resultado.</p>
+        </div>
+      </div>
+      <div class="tip">
+        <div class="tip-icon">🔴</div>
+        <div class="tip-content">
+          <h4>Plan B siempre</h4>
+          <p>Graba una corrida exitosa. Si algo falla en vivo, muestra el video. El público lo entenderá.</p>
+        </div>
+      </div>
+      <div class="tip">
+        <div class="tip-icon">🌎</div>
+        <div class="tip-content">
+          <h4>Use case local</h4>
+          <p>Menciona un caso real latinoamericano: fintech, retail, logística. El público se conecta más.</p>
+        </div>
+      </div>
+      <div class="tip">
+        <div class="tip-icon">📊</div>
+        <div class="tip-content">
+          <h4>Muestra Observability</h4>
+          <p>Abre CloudWatch Traces en vivo para mostrar cómo cada tool call es trazado. Muy impactante visualmente.</p>
+        </div>
+      </div>
+      <div class="tip">
+        <div class="tip-icon">🔗</div>
+        <div class="tip-content">
+          <h4>QR Code al repo</h4>
+          <p>Termina con un QR al GitHub repo con todo el código. La comunidad lo agradece muchísimo.</p>
+        </div>
+      </div>
+      <div class="tip">
+        <div class="tip-icon">💬</div>
+        <div class="tip-content">
+          <h4>Habla en español</h4>
+          <p>Los comentarios en el código en español, el scenario en español. Hace el demo mucho más cercano.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- TAGS -->
+  <section style="padding-top:1rem; padding-bottom:1rem;">
+    <div class="section-label">// STACK COMPLETO</div>
+    <div style="margin-top:0.5rem;">
+      <span class="tag">Amazon Bedrock</span>
+      <span class="tag">AgentCore Runtime</span>
+      <span class="tag">AgentCore Gateway</span>
+      <span class="tag">AgentCore Memory</span>
+      <span class="tag">MCP Protocol</span>
+      <span class="tag">Strands Agents</span>
+      <span class="tag">FastMCP</span>
+      <span class="tag">Amazon Nova Pro</span>
+      <span class="tag">CloudWatch</span>
+      <span class="tag">Amazon Cognito</span>
+      <span class="tag">AWS Lambda</span>
+      <span class="tag">Python 3.12</span>
+    </div>
+  </section>
+
+  <footer>
+    <div class="left">AWS Community · Nerdearla Chile 2020 · Level 200 · 30 min. - Pablo Inchausti</div>
+    <div class="right">github.com/awslabs/amazon-bedrock-agentcore-samples</div>
+  </footer>
+
+</div>
+</body>
+</html>

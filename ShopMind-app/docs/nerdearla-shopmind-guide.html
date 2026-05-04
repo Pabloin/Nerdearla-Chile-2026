@@ -1,0 +1,784 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ShopMind — Nerdearla Chile 2025</title>
+<link href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=Syne:wght@400;600;800&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg:       #0A0A0F;
+    --navy:     #0D1B2A;
+    --green:    #7EE8A2;
+    --orange:   #F7C59F;
+    --purple:   #9B8BFF;
+    --pink:     #FF8FA3;
+    --blue:     #5BC4F5;
+    --text:     #E8EDF2;
+    --muted:    #5A6A7A;
+    --border:   rgba(126,232,162,0.15);
+    --card:     rgba(13,27,42,0.7);
+  }
+
+  * { margin:0; padding:0; box-sizing:border-box; }
+
+  body {
+    font-family: 'Syne', sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    min-height: 100vh;
+    overflow-x: hidden;
+  }
+
+  body::before {
+    content: '';
+    position: fixed; inset: 0;
+    background-image:
+      linear-gradient(rgba(126,232,162,0.03) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(126,232,162,0.03) 1px, transparent 1px);
+    background-size: 40px 40px;
+    pointer-events: none; z-index: 0;
+  }
+
+  .wrap { max-width: 1200px; margin: 0 auto; padding: 0 2rem; position: relative; z-index: 1; }
+
+  /* ── HEADER ── */
+  header { padding: 3rem 0 2rem; border-bottom: 1px solid var(--border); }
+
+  .badge {
+    display: inline-block;
+    background: var(--green);
+    color: #000;
+    font-family: 'Space Mono', monospace;
+    font-size: 0.68rem;
+    padding: 0.3rem 0.8rem;
+    letter-spacing: 0.08em;
+    margin-bottom: 1rem;
+  }
+
+  h1 {
+    font-size: clamp(2.2rem, 5vw, 4.5rem);
+    font-weight: 800;
+    line-height: 1.0;
+    letter-spacing: -0.03em;
+  }
+  h1 .accent { color: var(--green); }
+  h1 .sub    { color: var(--orange); }
+
+  .tagline {
+    font-family: 'Space Mono', monospace;
+    font-size: 0.8rem;
+    color: var(--muted);
+    margin-top: 0.8rem;
+    line-height: 1.7;
+    max-width: 620px;
+  }
+
+  .pill-row { display: flex; gap: 0.5rem; flex-wrap: wrap; margin-top: 1.2rem; }
+  .pill {
+    font-family: 'Space Mono', monospace; font-size: 0.62rem;
+    padding: 0.25rem 0.7rem; border-radius: 999px; border: 1px solid;
+  }
+  .pill.g  { border-color: var(--green);  color: var(--green); }
+  .pill.o  { border-color: var(--orange); color: var(--orange); }
+  .pill.p  { border-color: var(--purple); color: var(--purple); }
+  .pill.pk { border-color: var(--pink);   color: var(--pink); }
+  .pill.b  { border-color: var(--blue);   color: var(--blue); }
+
+  /* ── ORIGIN BOX ── */
+  .origin-box {
+    margin: 2.5rem 0;
+    border: 1px solid rgba(247,197,159,0.3);
+    background: rgba(247,197,159,0.04);
+    padding: 1.5rem 2rem;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 2rem;
+  }
+  @media(max-width:650px){ .origin-box { grid-template-columns: 1fr; } }
+  .origin-col h3 { font-size: 0.9rem; color: var(--orange); margin-bottom: 0.5rem; }
+  .origin-col p {
+    font-family: 'Space Mono', monospace; font-size: 0.72rem;
+    color: var(--muted); line-height: 1.8;
+  }
+  .origin-col p strong { color: var(--text); }
+  .official-link {
+    font-family: 'Space Mono', monospace; font-size: 0.68rem;
+    color: var(--green); border-bottom: 1px solid rgba(126,232,162,0.3);
+    text-decoration: none;
+  }
+
+  /* ── SECTION ── */
+  section { padding: 3rem 0; }
+  .section-label {
+    font-family: 'Space Mono', monospace; font-size: 0.65rem;
+    color: var(--green); letter-spacing: 0.15em; text-transform: uppercase;
+    margin-bottom: 1rem;
+  }
+  h2 { font-size: 1.8rem; font-weight: 800; margin-bottom: 2rem; }
+
+  /* ── TALK FLOW ── */
+  .talk-flow {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(190px, 1fr));
+    gap: 1px; border: 1px solid var(--border);
+  }
+  .flow-step {
+    background: var(--card); padding: 1.5rem;
+    transition: background 0.2s;
+  }
+  .flow-step:hover { background: rgba(126,232,162,0.06); }
+  .flow-num { font-family:'Space Mono',monospace; font-size:2rem; font-weight:700; color:rgba(126,232,162,0.15); line-height:1; margin-bottom:0.5rem; }
+  .flow-title { font-size:0.95rem; font-weight:600; margin-bottom:0.3rem; }
+  .flow-time  { font-family:'Space Mono',monospace; font-size:0.65rem; color:var(--green); }
+  .flow-desc  { font-size:0.78rem; color:var(--muted); margin-top:0.5rem; line-height:1.6; }
+  .flow-step.hot .flow-title { color: var(--green); }
+
+  /* ── MOCKUP PANEL ── */
+  .mockup-wrap {
+    border: 1px solid var(--border);
+    background: var(--card);
+    overflow: hidden;
+  }
+  .mockup-topbar {
+    background: rgba(0,0,0,0.4);
+    border-bottom: 1px solid var(--border);
+    padding: 0.7rem 1.2rem;
+    display: flex; align-items: center; gap: 0.8rem;
+    font-family: 'Space Mono', monospace; font-size: 0.68rem; color: var(--muted);
+  }
+  .app-name  { color: var(--green); font-weight: 700; font-size: 0.85rem; }
+  .live-dot  { width:7px; height:7px; border-radius:50%; background:var(--green); margin-left:auto; animation:blink 1.5s infinite; }
+  @keyframes blink { 0%,100%{opacity:1} 50%{opacity:0.3} }
+
+  .mockup-body { display: grid; grid-template-columns: 1fr 280px; }
+  @media(max-width:700px){ .mockup-body { grid-template-columns: 1fr; } }
+
+  .chat-area { padding: 1.5rem; display:flex; flex-direction:column; gap:1rem; border-right:1px solid var(--border); }
+
+  .msg { display:flex; gap:0.7rem; align-items:flex-start; }
+  .msg.user { flex-direction:row-reverse; }
+  .av {
+    width:30px; height:30px; border-radius:50%;
+    display:flex; align-items:center; justify-content:center;
+    font-size:0.75rem; flex-shrink:0;
+    font-family:'Space Mono',monospace;
+  }
+  .av.u { background:#1E1E26; }
+  .av.a { background:rgba(126,232,162,0.1); border:1px solid rgba(126,232,162,0.3); color:var(--green); }
+  .bubble {
+    max-width:78%; padding:0.75rem 1rem;
+    font-family:'Space Mono',monospace; font-size:0.72rem; line-height:1.7;
+    border-radius:3px;
+  }
+  .bubble.u { background:#1E1E26; border:1px solid #2A2A3A; color:var(--text); }
+  .bubble.a { background:rgba(126,232,162,0.05); border:1px solid rgba(126,232,162,0.15); color:#C5F0D3; }
+  .bubble .hi { color:var(--green); font-weight:700; }
+  .bubble .oi { color:var(--orange); }
+  .bubble .pi { color:var(--purple); }
+  .bubble .rec { color:var(--pink); font-weight:700; }
+
+  /* ── AGENT PANEL ── */
+  .agent-side { padding: 1rem; display:flex; flex-direction:column; gap:0.6rem; }
+  .ap-title {
+    font-family:'Space Mono',monospace; font-size:0.58rem; color:var(--muted);
+    letter-spacing:0.12em; text-transform:uppercase; margin-bottom:0.3rem;
+    display:flex; align-items:center; gap:0.5rem;
+  }
+  .agent-card {
+    padding: 0.8rem; border: 1px solid;
+    position: relative; overflow: hidden;
+  }
+  .agent-card::before {
+    content:''; position:absolute; top:0; left:0; right:0; height:2px;
+    background:currentColor; opacity:0.5; animation:scan 2s infinite;
+  }
+  @keyframes scan { 0%,100%{opacity:0.5} 50%{opacity:0.1} }
+  .agent-card.ca1 { border-color:rgba(126,232,162,0.35); color:var(--green); }
+  .agent-card.ca2 { border-color:rgba(247,197,159,0.35); color:var(--orange); }
+  .agent-card.ca3 { border-color:rgba(155,139,255,0.35); color:var(--purple); }
+  .agent-card.ca4 { border-color:rgba(255,143,163,0.35); color:var(--pink); }
+  .ac-name   { font-family:'Space Mono',monospace; font-size:0.65rem; font-weight:700; margin-bottom:0.2rem; }
+  .ac-tool   { font-family:'Space Mono',monospace; font-size:0.55rem; opacity:0.45; margin-bottom:0.35rem; }
+  .ac-status { font-family:'Space Mono',monospace; font-size:0.6rem; opacity:0.7; line-height:1.5; }
+  .ap-note {
+    font-family:'Space Mono',monospace; font-size:0.58rem; color:var(--muted);
+    border:1px solid rgba(255,255,255,0.05); padding:0.7rem; line-height:1.6;
+    margin-top:0.3rem;
+  }
+
+  /* ── ARCHITECTURE ── */
+  .arch {
+    background: var(--card); border: 1px solid var(--border);
+    padding: 2.5rem; position:relative; overflow:hidden;
+  }
+  .arch::before {
+    content:'ARCHITECTURE'; position:absolute; top:1rem; right:1.5rem;
+    font-family:'Space Mono',monospace; font-size:0.6rem;
+    color:rgba(126,232,162,0.12); letter-spacing:0.2em;
+  }
+  .arch-layer-label {
+    font-family:'Space Mono',monospace; font-size:0.58rem; color:var(--muted);
+    letter-spacing:0.14em; text-transform:uppercase; margin-bottom:0.6rem; margin-top:1.2rem;
+  }
+  .arch-layer-label:first-child { margin-top:0; }
+  .arch-nodes { display:flex; gap:0.5rem; flex-wrap:wrap; align-items:center; }
+  .arch-node {
+    font-family:'Space Mono',monospace; font-size:0.68rem;
+    padding:0.5rem 1rem; border:1px solid; text-align:center; line-height:1.4;
+  }
+  .an-user    { border-color:rgba(255,255,255,0.15); color:#666; }
+  .an-fe      { border-color:rgba(91,196,245,0.4);   color:var(--blue); }
+  .an-sup     { border-color:rgba(126,232,162,0.5);   color:var(--green); background:rgba(126,232,162,0.05); }
+  .an-sub     { border-color:rgba(155,139,255,0.4);   color:var(--purple); }
+  .an-mcp     { border-color:rgba(255,143,163,0.4);   color:var(--pink); }
+  .an-infra   { border-color:rgba(255,255,255,0.08);  color:#555; font-size:0.6rem; }
+  .arch-arrow { color:rgba(126,232,162,0.4); font-size:0.9rem; }
+  .arch-conn {
+    display:flex; align-items:center; justify-content:center;
+    gap:0.5rem; margin:0.5rem 0;
+    font-family:'Space Mono',monospace; font-size:0.6rem; color:var(--muted);
+  }
+  .arch-conn::before,.arch-conn::after {
+    content:''; flex:1; height:1px; background:var(--border);
+  }
+  .arch-divider { height:1px; background:var(--border); margin:1rem 0; }
+
+  /* ── CODE ── */
+  .code-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(330px, 1fr));
+    gap: 1px; border: 1px solid var(--border);
+  }
+  .code-panel { background: var(--card); padding: 1.5rem; }
+  .code-title {
+    font-family:'Space Mono',monospace; font-size:0.62rem; color:var(--green);
+    letter-spacing:0.08em; margin-bottom:1rem;
+    display:flex; align-items:center; gap:0.5rem;
+  }
+  .code-title::before { content:'▶'; color:var(--orange); font-size:0.5rem; }
+  pre {
+    font-family:'Space Mono',monospace; font-size:0.71rem;
+    line-height:1.75; color:#8898AA; overflow-x:auto;
+  }
+  .ck { color:var(--orange); }
+  .cs { color:var(--green); }
+  .cc { color:#2A3A4A; font-style:italic; }
+  .cf { color:var(--purple); }
+  .cd { color:var(--pink); }
+  .cv { color:var(--text); }
+  .ci { color:var(--blue); }
+
+  /* ── WOW MOMENTS ── */
+  .wow-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(230px, 1fr));
+    gap: 1px; background: var(--border);
+    border: 1px solid var(--border);
+  }
+  .wow-item { background: var(--card); padding: 1.5rem; }
+  .wow-emoji { font-size: 1.5rem; margin-bottom: 0.5rem; display:block; }
+  .wow-num  { font-family:'Space Mono',monospace; font-size:0.6rem; color:var(--muted); margin-bottom:0.4rem; }
+  .wow-title { font-size:1rem; font-weight:700; margin-bottom:0.4rem; }
+  .wow-desc  { font-family:'Space Mono',monospace; font-size:0.7rem; color:var(--muted); line-height:1.6; }
+
+  /* ── REPO CALLOUT ── */
+  .repo-box {
+    background: rgba(126,232,162,0.04);
+    border: 1px solid rgba(126,232,162,0.2);
+    padding: 1.5rem 2rem;
+    margin: 2rem 0;
+    display:flex; align-items:center; gap:1.5rem; flex-wrap:wrap;
+  }
+  .repo-box .label { font-family:'Space Mono',monospace; font-size:0.7rem; color:var(--muted); }
+  .repo-box .url   { font-family:'Space Mono',monospace; font-size:0.8rem; color:var(--green); }
+  .repo-box .note  { font-family:'Space Mono',monospace; font-size:0.65rem; color:var(--muted); margin-top:0.3rem; }
+
+  /* ── TIPS ── */
+  .tips {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+    gap: 1px; border: 1px solid var(--border);
+  }
+  .tip { background:var(--card); padding:1.2rem 1.5rem; display:flex; gap:1rem; align-items:flex-start; }
+  .tip-icon { font-size:1.2rem; flex-shrink:0; }
+  .tip h4   { font-size:0.85rem; margin-bottom:0.3rem; }
+  .tip p    { font-family:'Space Mono',monospace; font-size:0.7rem; color:var(--muted); line-height:1.5; }
+
+  /* ── FOOTER ── */
+  footer {
+    border-top: 1px solid var(--border); padding: 2rem 0; margin-top:3rem;
+    display:flex; justify-content:space-between; align-items:center;
+    flex-wrap:wrap; gap:1rem;
+    font-family:'Space Mono',monospace; font-size:0.68rem; color:var(--muted);
+  }
+  footer .right { color: var(--green); }
+
+  .tag {
+    display:inline-block; border:1px solid rgba(126,232,162,0.3);
+    color:var(--green); font-family:'Space Mono',monospace;
+    font-size:0.62rem; padding:0.2rem 0.6rem; margin:0.2rem;
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <!-- HEADER -->
+  <header>
+    <div class="badge">NERDEARLA CHILE 2025 · AWS COMMUNITY · LEVEL 200 · 30 MIN</div>
+    <h1><span class="accent">Shop</span><span class="sub">Mind</span></h1>
+    <p class="tagline">
+      Asistente personal de compras con 4 agentes colaborando en paralelo.<br>
+      Powered by Amazon Bedrock AgentCore + MCP — construido originalmente para esta charla.
+    </p>
+    <div class="pill-row">
+      <span class="pill g">AgentCore Runtime</span>
+      <span class="pill o">AgentCore Gateway</span>
+      <span class="pill p">Strands Agents</span>
+      <span class="pill pk">MCP Protocol</span>
+      <span class="pill b">AgentCore Memory</span>
+    </div>
+  </header>
+
+  <!-- ORIGIN CALLOUT -->
+  <div class="origin-box">
+    <div class="origin-col">
+      <h3>📦 Repo oficial de referencia</h3>
+      <p>
+        El repo <strong>awslabs/amazon-bedrock-agentcore-samples</strong> es real y tiene tutoriales
+        oficiales de Runtime, Gateway, Memory y casos de uso como incident-response y device-management.<br><br>
+        → <a class="official-link" href="https://github.com/awslabs/amazon-bedrock-agentcore-samples">github.com/awslabs/amazon-bedrock-agentcore-samples</a>
+      </p>
+    </div>
+    <div class="origin-col">
+      <h3>✨ ShopMind es 100% original</h3>
+      <p>
+        <strong>No existe en ese repo.</strong> ShopMind fue diseñado por Claude específicamente
+        para Nerdearla Chile — el concepto de personal shopper con panel de agentes visibles,
+        la arquitectura, el código y el nombre son originales.<br><br>
+        El código sigue los patrones reales de la API (FastMCP, BedrockAgentCoreApp, Strands).
+      </p>
+    </div>
+  </div>
+
+  <!-- TALK FLOW -->
+  <section>
+    <div class="section-label">// 01 — Estructura de la Charla</div>
+    <h2>Talk Flow (30 min)</h2>
+    <div class="talk-flow">
+      <div class="flow-step">
+        <div class="flow-num">01</div>
+        <div class="flow-title">El Hook</div>
+        <div class="flow-time">0:00 — 0:03</div>
+        <div class="flow-desc">¿Cuántas horas perdiste comparando precios en 10 tabs? La audiencia ríe y se identifica. Ganaste su atención.</div>
+      </div>
+      <div class="flow-step">
+        <div class="flow-num">02</div>
+        <div class="flow-title">MCP = USB-C</div>
+        <div class="flow-time">0:03 — 0:08</div>
+        <div class="flow-desc">Analogía simple: MCP estandariza cómo los agentes usan herramientas, igual que USB-C estandarizó los cables. Sin código de integración custom.</div>
+      </div>
+      <div class="flow-step">
+        <div class="flow-num">03</div>
+        <div class="flow-title">AgentCore Overview</div>
+        <div class="flow-time">0:08 — 0:13</div>
+        <div class="flow-desc">Runtime, Gateway, Memory, Observability. "Escala a miles de usuarios sin que manejes servidores." Muestra arquitectura.</div>
+      </div>
+      <div class="flow-step hot">
+        <div class="flow-num">04</div>
+        <div class="flow-title">🔴 DEMO LIVE</div>
+        <div class="flow-time">0:13 — 0:25</div>
+        <div class="flow-desc">Escribe en la app. Señala el panel de 4 agentes trabajando en paralelo. Muestra CloudWatch Traces. Es el momento que van a recordar.</div>
+      </div>
+      <div class="flow-step">
+        <div class="flow-num">05</div>
+        <div class="flow-title">Deploy en vivo</div>
+        <div class="flow-time">0:25 — 0:28</div>
+        <div class="flow-desc">Muestra <code style="color:var(--green)">deploy.sh</code> o que la app está corriendo en AWS ahora mismo. Credibilidad instantánea.</div>
+      </div>
+      <div class="flow-step">
+        <div class="flow-num">06</div>
+        <div class="flow-title">QR + Comunidad</div>
+        <div class="flow-time">0:28 — 0:30</div>
+        <div class="flow-desc">QR al repo en GitHub. Próximos meetups AWS Chile. La audiencia se lleva algo concreto.</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- LIVE DEMO MOCKUP -->
+  <section>
+    <div class="section-label">// 02 — Lo que el Público Ve</div>
+    <h2>Demo en Pantalla</h2>
+    <div class="mockup-wrap">
+      <div class="mockup-topbar">
+        <span class="app-name">🛒 ShopMind</span>
+        <span>powered by Amazon Bedrock AgentCore + MCP</span>
+        <span class="live-dot"></span>
+      </div>
+      <div class="mockup-body">
+
+        <!-- Chat -->
+        <div class="chat-area">
+          <div class="msg user">
+            <div class="av u">tú</div>
+            <div class="bubble u">Quiero auriculares inalámbricos para estudiar. Presupuesto $80 USD. Que tengan buena cancelación de ruido.</div>
+          </div>
+          <div class="msg">
+            <div class="av a">🤖</div>
+            <div class="bubble a">Perfecto! Activando mis 4 agentes especializados en paralelo... dame unos segundos ⏳</div>
+          </div>
+          <div class="msg">
+            <div class="av a">🤖</div>
+            <div class="bubble a">
+              Mis agentes encontraron las mejores opciones dentro de tu presupuesto:<br><br>
+              <span class="hi">① Sony WH-CH520 — $59</span> ⭐ 4.5 (2.1k reseñas)<br>
+              &nbsp;&nbsp;Cancelación básica · 50h batería<br><br>
+              <span class="oi">② Anker Q45 — $65</span> ⭐ 4.4 (8.3k reseñas)<br>
+              &nbsp;&nbsp;ANC activo · muy recomendado para estudio<br><br>
+              <span class="pi">③ JBL Tune 770NC — $79</span> ⭐ 4.6 (3.7k reseñas)<br>
+              &nbsp;&nbsp;Cancelación híbrida · el favorito de estudiantes<br><br>
+              <span class="rec">→ Mi recomendación: JBL Tune 770NC.</span><br>
+              Está casi en tu límite pero tiene la mejor cancelación del grupo para estudiar. Vale cada peso.
+            </div>
+          </div>
+        </div>
+
+        <!-- Agent Panel -->
+        <div class="agent-side">
+          <div class="ap-title">
+            🔴 Agentes en vivo
+            <span style="width:6px;height:6px;border-radius:50%;background:var(--green);margin-left:auto;animation:blink 1.5s infinite;display:inline-block;"></span>
+          </div>
+          <div class="agent-card ca1">
+            <div class="ac-name">🔍 Search Agent</div>
+            <div class="ac-tool">MCP Tool: web_search</div>
+            <div class="ac-status">Buscando "auriculares<br>ANC $80"<br>→ 47 resultados</div>
+          </div>
+          <div class="agent-card ca2">
+            <div class="ac-name">💰 Price Agent</div>
+            <div class="ac-tool">MCP Tool: price_compare</div>
+            <div class="ac-status">Amazon · MercadoLibre<br>→ 3 opciones ≤ $80</div>
+          </div>
+          <div class="agent-card ca3">
+            <div class="ac-name">⭐ Review Agent</div>
+            <div class="ac-tool">MCP Tool: fetch_reviews</div>
+            <div class="ac-status">Filtro: "estudiantes"<br>→ scoring completo</div>
+          </div>
+          <div class="agent-card ca4">
+            <div class="ac-name">📊 Budget Agent</div>
+            <div class="ac-tool">MCP Tool: user_memory</div>
+            <div class="ac-status">Verifica presupuesto<br>+ historial usuario</div>
+          </div>
+          <div class="ap-note">
+            4 agentes en paralelo via AgentCore Runtime.<br>
+            Coordinados por Supervisor Agent (Strands).
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ARCHITECTURE -->
+  <section>
+    <div class="section-label">// 03 — Arquitectura</div>
+    <h2>Cómo está construido</h2>
+    <div class="arch">
+
+      <div class="arch-layer-label">CLIENTE — React App (Chat + Panel de Agentes)</div>
+      <div class="arch-nodes">
+        <div class="arch-node an-user">👤 Usuario</div>
+        <div class="arch-arrow">→</div>
+        <div class="arch-node an-fe">React App<br><span style="font-size:0.55rem;opacity:0.5">Chat + AgentPanel</span></div>
+        <div class="arch-arrow">→</div>
+        <div class="arch-node an-fe">SSE Streaming<br><span style="font-size:0.55rem;opacity:0.5">eventos en tiempo real</span></div>
+      </div>
+
+      <div class="arch-conn">↓ &nbsp; invoca via HTTP &nbsp; ↓</div>
+
+      <div class="arch-layer-label">AGENTCORE RUNTIME — Orquestación Multi-Agente</div>
+      <div class="arch-nodes">
+        <div class="arch-node an-sup">🧠 Supervisor Agent<br><span style="font-size:0.55rem;opacity:0.6">Strands · Nova Pro</span></div>
+        <div class="arch-arrow">↔</div>
+        <div class="arch-node an-sub">Search<br>Agent</div>
+        <div class="arch-node an-sub">Price<br>Agent</div>
+        <div class="arch-node an-sub">Review<br>Agent</div>
+        <div class="arch-node an-sub">Budget<br>Agent</div>
+      </div>
+
+      <div class="arch-conn">↓ &nbsp; MCP Protocol via Gateway &nbsp; ↓</div>
+
+      <div class="arch-layer-label">AGENTCORE GATEWAY — MCP Tool Servers unificados</div>
+      <div class="arch-nodes">
+        <div class="arch-node an-mcp">MCP: web_search<br><span style="font-size:0.55rem;opacity:0.5">DuckDuckGo API</span></div>
+        <div class="arch-node an-mcp">MCP: price_compare<br><span style="font-size:0.55rem;opacity:0.5">Lambda + scraper</span></div>
+        <div class="arch-node an-mcp">MCP: fetch_reviews<br><span style="font-size:0.55rem;opacity:0.5">Lambda + análisis</span></div>
+        <div class="arch-node an-mcp">MCP: user_memory<br><span style="font-size:0.55rem;opacity:0.5">AgentCore Memory</span></div>
+      </div>
+
+      <div class="arch-divider"></div>
+
+      <div class="arch-layer-label">INFRAESTRUCTURA TRANSVERSAL</div>
+      <div class="arch-nodes">
+        <div class="arch-node an-infra">AgentCore Memory</div>
+        <div class="arch-node an-infra">AgentCore Identity<br>(Cognito)</div>
+        <div class="arch-node an-infra">AgentCore Observability<br>(CloudWatch)</div>
+        <div class="arch-node an-infra">Amazon Bedrock<br>Nova Pro</div>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- CODE SNIPPETS -->
+  <section>
+    <div class="section-label">// 04 — Código del Demo</div>
+    <h2>Key Code Snippets</h2>
+    <div class="code-grid">
+
+      <div class="code-panel">
+        <div class="code-title">supervisor_agent.py — El cerebro</div>
+        <pre><span class="cc"># Agents-as-Tools pattern: sub-agentes</span>
+<span class="cc"># son herramientas del supervisor</span>
+<span class="ci">from</span> <span class="cv">strands</span> <span class="ci">import</span> <span class="cv">Agent</span>
+<span class="ci">from</span> <span class="cv">strands.tools.mcp</span> <span class="ci">import</span> <span class="cv">MCPClient</span>
+<span class="ci">from</span> <span class="cv">bedrock_agentcore.runtime</span> <span class="ci">import</span> \
+    <span class="cv">BedrockAgentCoreApp</span>
+
+<span class="cv">app</span> = <span class="cf">BedrockAgentCoreApp</span>()
+<span class="cv">mcp</span> = <span class="cf">MCPClient</span>(<span class="cv">GATEWAY_URL</span>, token=<span class="cv">TOKEN</span>)
+
+<span class="cv">supervisor</span> = <span class="cf">Agent</span>(
+  <span class="cv">model</span>=<span class="cs">"us.amazon.nova-pro-v1:0"</span>,
+  <span class="cv">system_prompt</span>=<span class="cs">"""Eres ShopMind.
+  Llama a search, price, review y
+  budget agents EN PARALELO.
+  Responde en español, claro y
+  con emojis."""</span>,
+  <span class="cc"># sub-agentes como tools</span>
+  <span class="cv">tools</span>=[<span class="cv">search_agent</span>, <span class="cv">price_agent</span>,
+         <span class="cv">review_agent</span>, <span class="cv">budget_agent</span>]
+)
+
+<span class="cd">@app.entrypoint</span>
+<span class="ck">async def</span> <span class="cf">handle</span>(<span class="cv">payload</span>):
+  <span class="ck">async for</span> <span class="cv">chunk</span> <span class="ck">in</span> \
+    <span class="cv">supervisor</span>.<span class="cf">stream_async</span>(
+      <span class="cv">payload</span>[<span class="cs">"message"</span>]
+    ):
+    <span class="ck">yield</span> <span class="cv">chunk</span></pre>
+      </div>
+
+      <div class="code-panel">
+        <div class="code-title">mcp_price_server.py — MCP Tool</div>
+        <pre><span class="cc"># FastMCP server deployado en</span>
+<span class="cc"># AgentCore Runtime via:</span>
+<span class="cc"># agentcore configure -e server.py \</span>
+<span class="cc">#   --protocol MCP && agentcore launch</span>
+<span class="ci">from</span> <span class="cv">mcp.server.fastmcp</span> <span class="ci">import</span> <span class="cv">FastMCP</span>
+<span class="ci">import</span> <span class="cv">boto3</span>, <span class="cv">json</span>
+
+<span class="cv">mcp</span> = <span class="cf">FastMCP</span>(<span class="cs">"shopmind-price-tools"</span>)
+
+<span class="cd">@mcp.tool()</span>
+<span class="ck">async def</span> <span class="cf">price_compare</span>(
+  <span class="cv">product_name</span>: <span class="cv">str</span>,
+  <span class="cv">max_price_usd</span>: <span class="cv">float</span>
+) -> <span class="cv">list</span>[<span class="cv">dict</span>]:
+  <span class="cs">"""Compara precios en tiendas."""</span>
+  <span class="cv">res</span> = <span class="cv">boto3</span>.<span class="cf">client</span>(<span class="cs">"lambda"</span>).<span class="cf">invoke</span>(
+    <span class="cv">FunctionName</span>=<span class="cs">"shopmind-scraper"</span>,
+    <span class="cv">Payload</span>=<span class="cv">json</span>.<span class="cf">dumps</span>({
+      <span class="cs">"query"</span>: <span class="cv">product_name</span>,
+      <span class="cs">"max"</span>: <span class="cv">max_price_usd</span>
+    })
+  )
+  <span class="ck">return</span> <span class="cv">json</span>.<span class="cf">loads</span>(
+    <span class="cv">res</span>[<span class="cs">"Payload"</span>].<span class="cf">read</span>()
+  )</pre>
+      </div>
+
+      <div class="code-panel">
+        <div class="code-title">setup_gateway.py — Registra MCP targets</div>
+        <pre><span class="ci">import</span> <span class="cv">boto3</span>
+
+<span class="cv">client</span> = <span class="cv">boto3</span>.<span class="cf">client</span>(
+  <span class="cs">"bedrock-agentcore-control"</span>
+)
+
+<span class="cc"># 1. Crear el Gateway</span>
+<span class="cv">gw</span> = <span class="cv">client</span>.<span class="cf">create_gateway</span>(
+  <span class="cv">name</span>=<span class="cs">"shopmind-gateway"</span>,
+  <span class="cv">authorizerType</span>=<span class="cs">"CUSTOM_JWT"</span>,
+  <span class="cv">authorizerConfiguration</span>={
+    <span class="cs">"customJWTAuthorizer"</span>: {
+      <span class="cs">"allowedClients"</span>: [<span class="cv">CLIENT_ID</span>],
+      <span class="cs">"discoveryUrl"</span>:   <span class="cv">COGNITO_URL</span>
+    }
+  }
+)
+
+<span class="cc"># 2. Registrar cada MCP server</span>
+<span class="ck">for</span> <span class="cv">name</span>, <span class="cv">url</span> <span class="ck">in</span> <span class="cv">MCP_SERVERS</span>.<span class="cf">items</span>():
+  <span class="cv">client</span>.<span class="cf">create_gateway_target</span>(
+    <span class="cv">gatewayIdentifier</span>=<span class="cv">gw</span>[<span class="cs">"gatewayId"</span>],
+    <span class="cv">name</span>=<span class="cs">f"shopmind-{name}"</span>,
+    <span class="cv">targetConfiguration</span>={
+      <span class="cs">"mcp"</span>: {
+        <span class="cs">"endpoint"</span>: {<span class="cs">"url"</span>: <span class="cv">url</span>}
+      }
+    }
+  )</pre>
+      </div>
+
+      <div class="code-panel">
+        <div class="code-title">deploy.sh — Un comando para todo</div>
+        <pre><span class="cc">#!/bin/bash</span>
+<span class="cc"># Deploy completo de ShopMind a AWS</span>
+
+<span class="cc"># 1. Deploy MCP servers</span>
+<span class="ck">for</span> <span class="cv">s</span> <span class="ck">in</span> price search reviews memory; <span class="ck">do</span>
+  <span class="cf">agentcore configure</span> \
+    -e <span class="cs">"mcp_${s}_server.py"</span> \
+    --protocol MCP \
+    --name <span class="cs">"shopmind-${s}"</span>
+  <span class="cf">agentcore launch</span>
+<span class="ck">done</span>
+
+<span class="cc"># 2. Crear Gateway + registrar targets</span>
+<span class="cf">python</span> infra/setup_gateway.py
+
+<span class="cc"># 3. Deploy supervisor agent</span>
+<span class="cf">agentcore configure</span> \
+  -e agents/supervisor_agent.py \
+  --name shopmind-supervisor
+<span class="cf">agentcore launch</span>
+
+<span class="cc"># 4. Frontend → S3 + CloudFront</span>
+<span class="cf">cd</span> frontend && <span class="cf">npm run build</span>
+<span class="cf">aws s3 sync</span> dist/ s3://shopmind-chile/
+
+<span class="cf">echo</span> <span class="cs">"🎉 ShopMind live!"</span></pre>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- WOW MOMENTS -->
+  <section>
+    <div class="section-label">// 05 — Los Momentos Wow</div>
+    <h2>Lo que van a recordar</h2>
+    <div class="wow-grid">
+      <div class="wow-item">
+        <span class="wow-emoji">👁️</span>
+        <div class="wow-num">WOW 01</div>
+        <div class="wow-title">Agentes visibles</div>
+        <div class="wow-desc">El panel de 4 agentes activos simultáneamente. Nadie en la sala ha visto agentes colaborar visualmente en tiempo real.</div>
+      </div>
+      <div class="wow-item">
+        <span class="wow-emoji">⚡</span>
+        <div class="wow-num">WOW 02</div>
+        <div class="wow-title">Paralelo = velocidad</div>
+        <div class="wow-desc">4 agentes en &lt;5 segundos vs 30 minutos en 10 tabs. Cuando lo ven, entienden por qué importa la orquestación.</div>
+      </div>
+      <div class="wow-item">
+        <span class="wow-emoji">🧠</span>
+        <div class="wow-num">WOW 03</div>
+        <div class="wow-title">Memory que persiste</div>
+        <div class="wow-desc">Cierra el tab, vuelve. El agente recuerda tu presupuesto. AgentCore Memory en acción — sin código de sesión.</div>
+      </div>
+      <div class="wow-item">
+        <span class="wow-emoji">🔍</span>
+        <div class="wow-num">WOW 04</div>
+        <div class="wow-title">Traces en CloudWatch</div>
+        <div class="wow-desc">"Esto es lo que tienes gratis con AgentCore Observability." Abre la consola y muestra cada tool call trazado.</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- REPO REFERENCE -->
+  <div class="repo-box">
+    <div>
+      <div class="label">Repo oficial de samples (referencia)</div>
+      <div class="url">github.com/awslabs/amazon-bedrock-agentcore-samples</div>
+      <div class="note">Tutoriales oficiales de Runtime, Gateway, Memory. ShopMind NO está ahí — es original para esta charla.</div>
+    </div>
+  </div>
+
+  <!-- TIPS -->
+  <section>
+    <div class="section-label">// 06 — Tips para el Demo en Vivo</div>
+    <h2>Pro Tips 🎤</h2>
+    <div class="tips">
+      <div class="tip">
+        <div class="tip-icon">🧪</div>
+        <div>
+          <h4>Pre-deploy todo</h4>
+          <p>Deploya agentes y MCP servers el día anterior. En el demo solo mostrás el invoke y el resultado en tiempo real.</p>
+        </div>
+      </div>
+      <div class="tip">
+        <div class="tip-icon">🔴</div>
+        <div>
+          <h4>Plan B siempre</h4>
+          <p>Grabá una corrida exitosa. Si algo falla en vivo, mostrás el video. El público lo entenderá — pasa en todo demo.</p>
+        </div>
+      </div>
+      <div class="tip">
+        <div class="tip-icon">🌎</div>
+        <div>
+          <h4>Use case local</h4>
+          <p>Buscá auriculares en pesos chilenos o productos de Falabella. El público chileno se conecta más cuando lo ve familiar.</p>
+        </div>
+      </div>
+      <div class="tip">
+        <div class="tip-icon">📊</div>
+        <div>
+          <h4>Abrí CloudWatch</h4>
+          <p>Mostrá los traces de los tool calls en vivo. Es lo más impactante visualmente para gente técnica.</p>
+        </div>
+      </div>
+      <div class="tip">
+        <div class="tip-icon">💬</div>
+        <div>
+          <h4>Todo en español</h4>
+          <p>Los comentarios del código, el scenario, la app. Hace el demo mucho más cercano para la audiencia de Nerdearla.</p>
+        </div>
+      </div>
+      <div class="tip">
+        <div class="tip-icon">🔗</div>
+        <div>
+          <h4>QR con el repo</h4>
+          <p>Terminá con un QR al GitHub con todo el código. La comunidad lo agradece muchísimo y amplifican tu charla.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- TAGS -->
+  <section style="padding-top:0.5rem; padding-bottom:1rem;">
+    <div class="section-label">// Stack Completo</div>
+    <div style="margin-top:0.5rem;">
+      <span class="tag">Amazon Bedrock</span>
+      <span class="tag">AgentCore Runtime</span>
+      <span class="tag">AgentCore Gateway</span>
+      <span class="tag">AgentCore Memory</span>
+      <span class="tag">AgentCore Observability</span>
+      <span class="tag">MCP Protocol</span>
+      <span class="tag">Strands Agents</span>
+      <span class="tag">FastMCP</span>
+      <span class="tag">Amazon Nova Pro</span>
+      <span class="tag">Amazon Cognito</span>
+      <span class="tag">AWS Lambda</span>
+      <span class="tag">React + SSE</span>
+      <span class="tag">Python 3.12</span>
+    </div>
+  </section>
+
+  <footer>
+    <div>AWS Community · Nerdearla Chile 2025 · Level 200 · 30 min · ShopMind (original)</div>
+    <div class="right">github.com/awslabs/amazon-bedrock-agentcore-samples</div>
+  </footer>
+
+</div>
+</body>
+</html>

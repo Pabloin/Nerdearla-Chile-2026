@@ -1,0 +1,380 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>ShopMind — Architecture Diagrams</title>
+  <script src="https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.min.js"></script>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+      background: #0d1117;
+      color: #e2e8f0;
+      min-height: 100vh;
+      padding: 48px 28px 64px;
+    }
+
+    header {
+      text-align: center;
+      margin-bottom: 56px;
+    }
+
+    header h1 {
+      font-size: 2.1rem;
+      font-weight: 700;
+      background: linear-gradient(135deg, #f97316 0%, #fb923c 60%, #fbbf24 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      letter-spacing: -0.5px;
+    }
+
+    header p {
+      color: #64748b;
+      font-size: 0.9rem;
+      margin-top: 8px;
+    }
+
+    .badges {
+      display: flex;
+      gap: 8px;
+      justify-content: center;
+      flex-wrap: wrap;
+      margin-top: 14px;
+    }
+
+    .badge {
+      display: inline-block;
+      background: #161b27;
+      border: 1px solid #2d3748;
+      color: #94a3b8;
+      font-size: 0.72rem;
+      padding: 4px 12px;
+      border-radius: 999px;
+      font-family: 'SF Mono', 'Fira Code', monospace;
+    }
+
+    .badge.orange { border-color: #f97316; color: #fb923c; }
+    .badge.purple { border-color: #a855f7; color: #c084fc; }
+    .badge.blue   { border-color: #3b82f6; color: #60a5fa; }
+
+    .section {
+      max-width: 1140px;
+      margin: 0 auto 72px;
+    }
+
+    .section-header {
+      display: flex;
+      align-items: flex-start;
+      gap: 14px;
+      margin-bottom: 20px;
+    }
+
+    .num {
+      background: linear-gradient(135deg, #f97316, #fb923c);
+      color: #fff;
+      font-size: 0.8rem;
+      font-weight: 800;
+      width: 30px;
+      height: 30px;
+      border-radius: 50%;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+      margin-top: 2px;
+    }
+
+    .section-title h2 {
+      font-size: 1.2rem;
+      font-weight: 600;
+      color: #f1f5f9;
+    }
+
+    .section-title p {
+      color: #64748b;
+      font-size: 0.84rem;
+      margin-top: 3px;
+    }
+
+    .card {
+      background: #161b27;
+      border: 1px solid #252d3d;
+      border-radius: 18px;
+      padding: 36px 28px;
+      overflow-x: auto;
+    }
+
+    .mermaid {
+      display: flex;
+      justify-content: center;
+    }
+
+    footer {
+      text-align: center;
+      color: #374151;
+      font-size: 0.78rem;
+      padding-top: 32px;
+      border-top: 1px solid #1a2030;
+      max-width: 1140px;
+      margin: 0 auto;
+    }
+  </style>
+</head>
+<body>
+
+<header>
+  <h1>ShopMind Architecture</h1>
+  <p>Diagrama de componentes y flujo de requests</p>
+  <div class="badges">
+    <span class="badge orange">Amazon Bedrock AgentCore</span>
+    <span class="badge purple">Strands Agents · Nova Pro</span>
+    <span class="badge blue">FastMCP · Puppeteer · MercadoLibre</span>
+    <span class="badge">Nerdearla Chile 2025</span>
+  </div>
+</header>
+
+<!-- ─────────────────────── DIAGRAM 1 ─────────────────────── -->
+<div class="section">
+  <div class="section-header">
+    <span class="num">1</span>
+    <div class="section-title">
+      <h2>Arquitectura del Sistema — Vista de Componentes</h2>
+      <p>Todos los procesos, servicios y cómo se conectan. Incluye los dos modos: local dev y producción AgentCore.</p>
+    </div>
+  </div>
+  <div class="card">
+    <div class="mermaid">
+graph TB
+    subgraph USER["👤 Usuario"]
+        BR["Navegador"]
+    end
+
+    subgraph FRONTEND["🌐 Frontend"]
+        FE["React + Vite\nport 5173 (dev)\nS3 static (prod)"]
+    end
+
+    subgraph BACKEND_LOCAL["⚡ Modo Local — backend_local.py"]
+        BL["FastAPI\nport 8000\nInvoca agente directo"]
+    end
+
+    subgraph BACKEND_PROD["☁️ Modo Prod — backend.py"]
+        BP["FastAPI proxy\nport 8000\nboto3 → AgentCore"]
+        LAM_B["Lambda\nshopmind-backend\nFunction URL (prod)"]
+    end
+
+    subgraph AGENTCORE["🤖 Amazon Bedrock AgentCore Runtime"]
+        SUP["supervisor_agent.py\nStrands Agent\nBedrockAgentCoreApp"]
+    end
+
+    subgraph NOVA["🧠 Amazon Bedrock"]
+        NP["Nova Pro\nus.amazon.nova-pro-v1:0\nInference Profile"]
+    end
+
+    subgraph MCP["🔌 MCP Server — mcp_server.py"]
+        direction LR
+        MS["FastMCP\nport 8001\n/mcp endpoint"]
+        T1["web_search"]
+        T2["price_compare"]
+        T3["fetch_reviews"]
+        T4["user_memory"]
+        MS --> T1 & T2 & T3 & T4
+    end
+
+    subgraph SCRAPER["🕷️ Scraper — scraper.js"]
+        SC["Node.js + Puppeteer\nHeadless Chrome"]
+    end
+
+    subgraph EXTERNAL["🛒 Externo"]
+        ML["MercadoLibre Chile\nmercadolibre.cl"]
+    end
+
+    subgraph STORAGE["💾 Persistencia local"]
+        DS["data/scrapes/\nJSON por búsqueda"]
+    end
+
+    BR --> FE
+
+    FE -->|"POST /invoke\n{message, session_id}"| BL
+    FE -->|"POST /invoke (SSE)\n{message, session_id}"| LAM_B
+
+    BL -->|"agent.invoke_async()"| SUP
+    LAM_B -->|"invoke_agent_runtime()\nSigV4 · boto3"| AGENTCORE
+    BP -->|"invoke_agent_runtime()\nSigV4 · boto3"| AGENTCORE
+
+    SUP -->|"Converse API\nSigV4 interno"| NP
+    NP -->|"tool_use calls"| SUP
+
+    SUP -->|"streamablehttp_client\nhttp://localhost:8001/mcp"| MS
+
+    T1 & T2 & T3 -->|"subprocess node scraper.js"| SC
+    T4 -.->|"in-memory dict\n_user_prefs"| MS
+
+    SC -->|"HTTP scraping\nHeadless"| ML
+    SC -->|"Guarda JSON"| DS
+
+    style USER fill:#1a2030,stroke:#475569,color:#94a3b8
+    style FRONTEND fill:#0f2040,stroke:#3b82f6,color:#93c5fd
+    style BACKEND_LOCAL fill:#0f2520,stroke:#22c55e,color:#86efac
+    style BACKEND_PROD fill:#1a1a2e,stroke:#6366f1,color:#c7d2fe
+    style AGENTCORE fill:#2d1b4e,stroke:#a855f7,color:#e9d5ff
+    style NOVA fill:#3d1515,stroke:#ef4444,color:#fca5a5
+    style MCP fill:#1a2820,stroke:#10b981,color:#6ee7b7
+    style SCRAPER fill:#2a1e10,stroke:#f59e0b,color:#fde68a
+    style EXTERNAL fill:#1a1a1a,stroke:#6b7280,color:#9ca3af
+    style STORAGE fill:#1a1a1a,stroke:#4b5563,color:#9ca3af
+    </div>
+  </div>
+</div>
+
+<!-- ─────────────────────── DIAGRAM 2 ─────────────────────── -->
+<div class="section">
+  <div class="section-header">
+    <span class="num">2</span>
+    <div class="section-title">
+      <h2>Flujo de una Request — Diagrama de Secuencia</h2>
+      <p>Modo local dev. Cómo viaja una query del usuario de punta a punta, incluyendo los tool calls del agente.</p>
+    </div>
+  </div>
+  <div class="card">
+    <div class="mermaid">
+sequenceDiagram
+    actor User as 👤 Usuario
+    participant FE as React Frontend<br/>(port 5173)
+    participant BL as FastAPI Backend<br/>(backend_local · port 8000)
+    participant AG as Supervisor Agent<br/>(supervisor_agent.py · Strands)
+    participant NP as Nova Pro<br/>(Bedrock Converse API)
+    participant MS as MCP Server<br/>(mcp_server.py · port 8001)
+    participant SC as scraper.js<br/>(Node + Puppeteer)
+    participant ML as MercadoLibre Chile
+
+    User->>FE: "auriculares inalámbricos<br/>presupuesto $80 USD"
+
+    FE->>BL: POST /invoke<br/>{ message, session_id }
+
+    Note over BL: Lazy-init del agente<br/>conecta MCPClient → :8001
+
+    BL->>AG: agent.invoke_async(message)
+
+    AG->>NP: Converse API<br/>system_prompt + mensaje usuario
+
+    Note over NP: Analiza query,<br/>decide qué tools usar
+
+    NP-->>AG: tool_use: web_search<br/>{ query: "auriculares inalámbricos" }
+
+    AG->>MS: MCP tool call<br/>web_search(query, max_results=10)
+
+    MS->>SC: subprocess<br/>node scraper.js "auriculares..." 10
+
+    SC->>ML: HTTP scraping<br/>(headless Chrome)
+    ML-->>SC: HTML páginas de resultados
+
+    SC-->>MS: stdout JSON<br/>[{title, price_clp, price_usd, url, rating}]
+
+    Note over MS: Guarda JSON en<br/>data/scrapes/<timestamp>.json
+
+    MS-->>AG: tool_result: [ 10 productos ]
+
+    NP-->>AG: tool_use: price_compare<br/>{ product: "auriculares", max_price_usd: 80 }
+
+    AG->>MS: MCP tool call<br/>price_compare(product, max_price_usd=80)
+
+    MS->>SC: subprocess<br/>node scraper.js "auriculares" 15
+    SC->>ML: HTTP scraping
+    ML-->>SC: Resultados
+    SC-->>MS: JSON productos
+
+    Note over MS: Filtra price_usd ≤ 80<br/>ordena por precio ASC
+
+    MS-->>AG: tool_result: [ 10 prod. filtrados ]
+
+    NP-->>AG: tool_use: fetch_reviews<br/>{ product: "auriculares inalámbricos" }
+
+    AG->>MS: MCP tool call<br/>fetch_reviews(product)
+
+    MS->>SC: subprocess<br/>node scraper.js "auriculares" 10
+    SC->>ML: HTTP scraping
+    ML-->>SC: Resultados
+    SC-->>MS: JSON productos
+
+    Note over MS: Filtra los que tienen rating<br/>ordena por rating DESC → top 5
+
+    MS-->>AG: tool_result: [ 5 mejor valorados ]
+
+    AG->>NP: Converse API<br/>tool_results → generar respuesta final
+
+    Note over NP: Sintetiza los 3 tool results,<br/>filtra por presupuesto,<br/>redacta en español
+
+    NP-->>AG: Texto final con recomendaciones<br/>+ precios CLP/USD + URLs ML
+
+    AG-->>BL: result.message
+
+    Note over BL: Extrae text del mensaje<br/>limpia tags &lt;thinking&gt;<br/>recopila tool_results del turno
+
+    BL-->>FE: JSON { text, tool_results }
+
+    FE-->>User: Muestra respuesta con<br/>productos, precios y links ✅
+    </div>
+  </div>
+</div>
+
+<footer>
+  ShopMind · Amazon Bedrock AgentCore Demo · Nerdearla Chile 2025
+</footer>
+
+<script>
+  mermaid.initialize({
+    startOnLoad: true,
+    theme: 'dark',
+    themeVariables: {
+      primaryColor: '#1e293b',
+      primaryTextColor: '#e2e8f0',
+      primaryBorderColor: '#475569',
+      lineColor: '#64748b',
+      secondaryColor: '#0f172a',
+      tertiaryColor: '#1e293b',
+      background: '#161b27',
+      mainBkg: '#1e293b',
+      nodeBorder: '#475569',
+      clusterBkg: '#0f172a',
+      titleColor: '#f8fafc',
+      edgeLabelBackground: '#1e293b',
+      actorBkg: '#1e293b',
+      actorBorder: '#475569',
+      actorTextColor: '#e2e8f0',
+      actorLineColor: '#64748b',
+      signalColor: '#94a3b8',
+      signalTextColor: '#e2e8f0',
+      labelBoxBkgColor: '#1e293b',
+      labelBoxBorderColor: '#475569',
+      labelTextColor: '#e2e8f0',
+      loopTextColor: '#e2e8f0',
+      noteBkgColor: '#2d3748',
+      noteTextColor: '#e2e8f0',
+      noteBorderColor: '#475569',
+      activationBkgColor: '#2d1b4e',
+      activationBorderColor: '#a855f7',
+      sequenceNumberColor: '#f8fafc',
+    },
+    flowchart: {
+      curve: 'basis',
+      padding: 20,
+      htmlLabels: true,
+    },
+    sequence: {
+      diagramMarginX: 30,
+      diagramMarginY: 20,
+      actorMargin: 70,
+      width: 155,
+      height: 55,
+      boxMargin: 10,
+      noteMargin: 12,
+      messageMargin: 38,
+      mirrorActors: false,
+      showSequenceNumbers: false,
+    },
+  });
+</script>
+</body>
+</html>

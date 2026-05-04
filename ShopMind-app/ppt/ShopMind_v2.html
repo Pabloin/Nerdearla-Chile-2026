@@ -1,0 +1,816 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ShopMind v2 — Nerdearla Chile 2025</title>
+<link href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=Syne:wght@400;600;800&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg:       #0A0A0F;
+    --navy:     #0D1B2A;
+    --green:    #7EE8A2;
+    --orange:   #F7C59F;
+    --purple:   #9B8BFF;
+    --pink:     #FF8FA3;
+    --blue:     #5BC4F5;
+    --text:     #E8EDF2;
+    --muted:    #5A6A7A;
+    --border:   rgba(126,232,162,0.15);
+    --card:     rgba(13,27,42,0.7);
+  }
+
+  * { margin:0; padding:0; box-sizing:border-box; }
+
+  body {
+    font-family: 'Syne', sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    min-height: 100vh;
+    overflow-x: hidden;
+  }
+
+  body::before {
+    content: '';
+    position: fixed; inset: 0;
+    background-image:
+      linear-gradient(rgba(126,232,162,0.03) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(126,232,162,0.03) 1px, transparent 1px);
+    background-size: 40px 40px;
+    pointer-events: none; z-index: 0;
+  }
+
+  .wrap { max-width: 1200px; margin: 0 auto; padding: 0 2rem; position: relative; z-index: 1; }
+
+  /* ── HEADER ── */
+  header { padding: 3rem 0 2rem; border-bottom: 1px solid var(--border); }
+
+  .badge {
+    display: inline-block;
+    background: var(--green);
+    color: #000;
+    font-family: 'Space Mono', monospace;
+    font-size: 0.68rem;
+    padding: 0.3rem 0.8rem;
+    letter-spacing: 0.08em;
+    margin-bottom: 1rem;
+  }
+
+  h1 {
+    font-size: clamp(2.2rem, 5vw, 4.5rem);
+    font-weight: 800;
+    line-height: 1.0;
+    letter-spacing: -0.03em;
+  }
+  h1 .accent { color: var(--green); }
+  h1 .sub    { color: var(--orange); }
+
+  .tagline {
+    font-family: 'Space Mono', monospace;
+    font-size: 0.8rem;
+    color: var(--muted);
+    margin-top: 0.8rem;
+    line-height: 1.7;
+    max-width: 620px;
+  }
+
+  .pill-row { display: flex; gap: 0.5rem; flex-wrap: wrap; margin-top: 1.2rem; }
+  .pill {
+    font-family: 'Space Mono', monospace; font-size: 0.62rem;
+    padding: 0.25rem 0.7rem; border-radius: 999px; border: 1px solid;
+  }
+  .pill.g  { border-color: var(--green);  color: var(--green); }
+  .pill.o  { border-color: var(--orange); color: var(--orange); }
+  .pill.p  { border-color: var(--purple); color: var(--purple); }
+  .pill.pk { border-color: var(--pink);   color: var(--pink); }
+  .pill.b  { border-color: var(--blue);   color: var(--blue); }
+
+  /* ── ORIGIN BOX ── */
+  .origin-box {
+    margin: 2.5rem 0;
+    border: 1px solid rgba(247,197,159,0.3);
+    background: rgba(247,197,159,0.04);
+    padding: 1.5rem 2rem;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 2rem;
+  }
+  @media(max-width:650px){ .origin-box { grid-template-columns: 1fr; } }
+  .origin-col h3 { font-size: 0.9rem; color: var(--orange); margin-bottom: 0.5rem; }
+  .origin-col p {
+    font-family: 'Space Mono', monospace; font-size: 0.72rem;
+    color: var(--muted); line-height: 1.8;
+  }
+  .origin-col p strong { color: var(--text); }
+  .official-link {
+    font-family: 'Space Mono', monospace; font-size: 0.68rem;
+    color: var(--green); border-bottom: 1px solid rgba(126,232,162,0.3);
+    text-decoration: none;
+  }
+
+  /* ── SECTION ── */
+  section { padding: 3rem 0; }
+  .section-label {
+    font-family: 'Space Mono', monospace; font-size: 0.65rem;
+    color: var(--green); letter-spacing: 0.15em; text-transform: uppercase;
+    margin-bottom: 1rem;
+  }
+  h2 { font-size: 1.8rem; font-weight: 800; margin-bottom: 2rem; }
+
+  /* ── TALK FLOW ── */
+  .talk-flow {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(190px, 1fr));
+    gap: 1px; border: 1px solid var(--border);
+  }
+  .flow-step {
+    background: var(--card); padding: 1.5rem;
+    transition: background 0.2s;
+  }
+  .flow-step:hover { background: rgba(126,232,162,0.06); }
+  .flow-num { font-family:'Space Mono',monospace; font-size:2rem; font-weight:700; color:rgba(126,232,162,0.15); line-height:1; margin-bottom:0.5rem; }
+  .flow-title { font-size:0.95rem; font-weight:600; margin-bottom:0.3rem; }
+  .flow-time  { font-family:'Space Mono',monospace; font-size:0.65rem; color:var(--green); }
+  .flow-desc  { font-size:0.78rem; color:var(--muted); margin-top:0.5rem; line-height:1.6; }
+  .flow-step.hot .flow-title { color: var(--green); }
+
+  /* ── MOCKUP PANEL ── */
+  .mockup-wrap {
+    border: 1px solid var(--border);
+    background: var(--card);
+    overflow: hidden;
+  }
+  .mockup-topbar {
+    background: rgba(0,0,0,0.4);
+    border-bottom: 1px solid var(--border);
+    padding: 0.7rem 1.2rem;
+    display: flex; align-items: center; gap: 0.8rem;
+    font-family: 'Space Mono', monospace; font-size: 0.68rem; color: var(--muted);
+  }
+  .app-name  { color: var(--green); font-weight: 700; font-size: 0.85rem; }
+  .live-dot  { width:7px; height:7px; border-radius:50%; background:var(--green); margin-left:auto; animation:blink 1.5s infinite; }
+  @keyframes blink { 0%,100%{opacity:1} 50%{opacity:0.3} }
+
+  .mockup-body { display: grid; grid-template-columns: 1fr 280px; }
+  @media(max-width:700px){ .mockup-body { grid-template-columns: 1fr; } }
+
+  .chat-area { padding: 1.5rem; display:flex; flex-direction:column; gap:1rem; border-right:1px solid var(--border); }
+
+  .msg { display:flex; gap:0.7rem; align-items:flex-start; }
+  .msg.user { flex-direction:row-reverse; }
+  .av {
+    width:30px; height:30px; border-radius:50%;
+    display:flex; align-items:center; justify-content:center;
+    font-size:0.75rem; flex-shrink:0;
+    font-family:'Space Mono',monospace;
+  }
+  .av.u { background:#1E1E26; }
+  .av.a { background:rgba(126,232,162,0.1); border:1px solid rgba(126,232,162,0.3); color:var(--green); }
+  .bubble {
+    max-width:78%; padding:0.75rem 1rem;
+    font-family:'Space Mono',monospace; font-size:0.72rem; line-height:1.7;
+    border-radius:3px;
+  }
+  .bubble.u { background:#1E1E26; border:1px solid #2A2A3A; color:var(--text); }
+  .bubble.a { background:rgba(126,232,162,0.05); border:1px solid rgba(126,232,162,0.15); color:#C5F0D3; }
+  .bubble .hi { color:var(--green); font-weight:700; }
+  .bubble .oi { color:var(--orange); }
+  .bubble .pi { color:var(--purple); }
+  .bubble .rec { color:var(--pink); font-weight:700; }
+
+  /* ── TOOL PANEL ── */
+  .tool-side { padding: 1rem; display:flex; flex-direction:column; gap:0.6rem; }
+  .tp-title {
+    font-family:'Space Mono',monospace; font-size:0.58rem; color:var(--muted);
+    letter-spacing:0.12em; text-transform:uppercase; margin-bottom:0.3rem;
+    display:flex; align-items:center; gap:0.5rem;
+  }
+  .tool-card {
+    padding: 0.8rem; border: 1px solid;
+    position: relative; overflow: hidden;
+  }
+  .tool-card::before {
+    content:''; position:absolute; top:0; left:0; right:0; height:2px;
+    background:currentColor; opacity:0.5; animation:scan 2s infinite;
+  }
+  @keyframes scan { 0%,100%{opacity:0.5} 50%{opacity:0.1} }
+  .tool-card.ca1 { border-color:rgba(126,232,162,0.35); color:var(--green); }
+  .tool-card.ca2 { border-color:rgba(247,197,159,0.35); color:var(--orange); }
+  .tool-card.ca3 { border-color:rgba(155,139,255,0.35); color:var(--purple); }
+  .tool-card.ca4 { border-color:rgba(255,143,163,0.35); color:var(--pink); }
+  .tc-name   { font-family:'Space Mono',monospace; font-size:0.65rem; font-weight:700; margin-bottom:0.2rem; }
+  .tc-tool   { font-family:'Space Mono',monospace; font-size:0.55rem; opacity:0.45; margin-bottom:0.35rem; }
+  .tc-status { font-family:'Space Mono',monospace; font-size:0.6rem; opacity:0.7; line-height:1.5; }
+  .tp-note {
+    font-family:'Space Mono',monospace; font-size:0.58rem; color:var(--muted);
+    border:1px solid rgba(255,255,255,0.05); padding:0.7rem; line-height:1.6;
+    margin-top:0.3rem;
+  }
+
+  /* ── ARCHITECTURE ── */
+  .arch {
+    background: var(--card); border: 1px solid var(--border);
+    padding: 2.5rem; position:relative; overflow:hidden;
+  }
+  .arch::before {
+    content:'ARCHITECTURE'; position:absolute; top:1rem; right:1.5rem;
+    font-family:'Space Mono',monospace; font-size:0.6rem;
+    color:rgba(126,232,162,0.12); letter-spacing:0.2em;
+  }
+  .arch-layer-label {
+    font-family:'Space Mono',monospace; font-size:0.58rem; color:var(--muted);
+    letter-spacing:0.14em; text-transform:uppercase; margin-bottom:0.6rem; margin-top:1.2rem;
+  }
+  .arch-layer-label:first-child { margin-top:0; }
+  .arch-nodes { display:flex; gap:0.5rem; flex-wrap:wrap; align-items:center; }
+  .arch-node {
+    font-family:'Space Mono',monospace; font-size:0.68rem;
+    padding:0.5rem 1rem; border:1px solid; text-align:center; line-height:1.4;
+  }
+  .an-user    { border-color:rgba(255,255,255,0.15); color:#666; }
+  .an-fe      { border-color:rgba(91,196,245,0.4);   color:var(--blue); }
+  .an-sup     { border-color:rgba(126,232,162,0.5);   color:var(--green); background:rgba(126,232,162,0.05); }
+  .an-mcp     { border-color:rgba(255,143,163,0.4);   color:var(--pink); }
+  .an-scraper { border-color:rgba(155,139,255,0.4);   color:var(--purple); }
+  .an-infra   { border-color:rgba(255,255,255,0.08);  color:#555; font-size:0.6rem; }
+  .arch-arrow { color:rgba(126,232,162,0.4); font-size:0.9rem; }
+  .arch-conn {
+    display:flex; align-items:center; justify-content:center;
+    gap:0.5rem; margin:0.5rem 0;
+    font-family:'Space Mono',monospace; font-size:0.6rem; color:var(--muted);
+  }
+  .arch-conn::before,.arch-conn::after {
+    content:''; flex:1; height:1px; background:var(--border);
+  }
+  .arch-divider { height:1px; background:var(--border); margin:1rem 0; }
+
+  /* ── CODE ── */
+  .code-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(330px, 1fr));
+    gap: 1px; border: 1px solid var(--border);
+  }
+  .code-panel { background: var(--card); padding: 1.5rem; }
+  .code-title {
+    font-family:'Space Mono',monospace; font-size:0.62rem; color:var(--green);
+    letter-spacing:0.08em; margin-bottom:1rem;
+    display:flex; align-items:center; gap:0.5rem;
+  }
+  .code-title::before { content:'▶'; color:var(--orange); font-size:0.5rem; }
+  pre {
+    font-family:'Space Mono',monospace; font-size:0.71rem;
+    line-height:1.75; color:#8898AA; overflow-x:auto;
+  }
+  .ck { color:var(--orange); }
+  .cs { color:var(--green); }
+  .cc { color:#2A3A4A; font-style:italic; }
+  .cf { color:var(--purple); }
+  .cd { color:var(--pink); }
+  .cv { color:var(--text); }
+  .ci { color:var(--blue); }
+
+  /* ── WOW MOMENTS ── */
+  .wow-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(230px, 1fr));
+    gap: 1px; background: var(--border);
+    border: 1px solid var(--border);
+  }
+  .wow-item { background: var(--card); padding: 1.5rem; }
+  .wow-emoji { font-size: 1.5rem; margin-bottom: 0.5rem; display:block; }
+  .wow-num  { font-family:'Space Mono',monospace; font-size:0.6rem; color:var(--muted); margin-bottom:0.4rem; }
+  .wow-title { font-size:1rem; font-weight:700; margin-bottom:0.4rem; }
+  .wow-desc  { font-family:'Space Mono',monospace; font-size:0.7rem; color:var(--muted); line-height:1.6; }
+
+  /* ── REPO CALLOUT ── */
+  .repo-box {
+    background: rgba(126,232,162,0.04);
+    border: 1px solid rgba(126,232,162,0.2);
+    padding: 1.5rem 2rem;
+    margin: 2rem 0;
+    display:flex; align-items:center; gap:1.5rem; flex-wrap:wrap;
+  }
+  .repo-box .label { font-family:'Space Mono',monospace; font-size:0.7rem; color:var(--muted); }
+  .repo-box .url   { font-family:'Space Mono',monospace; font-size:0.8rem; color:var(--green); }
+  .repo-box .note  { font-family:'Space Mono',monospace; font-size:0.65rem; color:var(--muted); margin-top:0.3rem; }
+
+  /* ── TIPS ── */
+  .tips {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+    gap: 1px; border: 1px solid var(--border);
+  }
+  .tip { background:var(--card); padding:1.2rem 1.5rem; display:flex; gap:1rem; align-items:flex-start; }
+  .tip-icon { font-size:1.2rem; flex-shrink:0; }
+  .tip h4   { font-size:0.85rem; margin-bottom:0.3rem; }
+  .tip p    { font-family:'Space Mono',monospace; font-size:0.7rem; color:var(--muted); line-height:1.5; }
+
+  /* ── FOOTER ── */
+  footer {
+    border-top: 1px solid var(--border); padding: 2rem 0; margin-top:3rem;
+    display:flex; justify-content:space-between; align-items:center;
+    flex-wrap:wrap; gap:1rem;
+    font-family:'Space Mono',monospace; font-size:0.68rem; color:var(--muted);
+  }
+  footer .right { color: var(--green); }
+
+  .tag {
+    display:inline-block; border:1px solid rgba(126,232,162,0.3);
+    color:var(--green); font-family:'Space Mono',monospace;
+    font-size:0.62rem; padding:0.2rem 0.6rem; margin:0.2rem;
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <!-- HEADER -->
+  <header>
+    <div class="badge">NERDEARLA CHILE 2025 · AWS COMMUNITY · LEVEL 200 · 30 MIN</div>
+    <h1><span class="accent">Shop</span><span class="sub">Mind</span> <span style="font-size:0.5em;color:var(--orange)">v2</span></h1>
+    <p class="tagline">
+      Asistente personal de compras con datos REALES de MercadoLibre Chile.<br>
+      Powered by Amazon Bedrock AgentCore + MCP — scraping en tiempo real con Puppeteer.
+    </p>
+    <div class="pill-row">
+      <span class="pill g">AgentCore Runtime</span>
+      <span class="pill o">MCP Protocol</span>
+      <span class="pill p">Strands Agent</span>
+      <span class="pill pk">Puppeteer Scraper</span>
+      <span class="pill b">MercadoLibre Chile</span>
+    </div>
+  </header>
+
+  <!-- ORIGIN CALLOUT -->
+  <div class="origin-box">
+    <div class="origin-col">
+      <h3>🆕 Qué cambió en v2</h3>
+      <p>
+        <strong>Arquitectura simplificada:</strong> 1 Supervisor Agent + 1 MCP Server (no 4 agentes separados).<br>
+        <strong>Datos reales:</strong> Scraping de MercadoLibre Chile con Puppeteer — productos, precios y URLs reales.<br>
+        <strong>Local-first:</strong> Funciona sin deploy a AWS para desarrollo rápido.
+      </p>
+    </div>
+    <div class="origin-col">
+      <h3>✨ Por qué es mejor</h3>
+      <p>
+        <strong>Más simple:</strong> Menos componentes = más fácil de entender y mantener.<br>
+        <strong>Más real:</strong> Los productos que ves son reales de MercadoLibre Chile ahora mismo.<br>
+        <strong>Más rápido:</strong> Desarrollo local sin esperar cold starts de AgentCore.
+      </p>
+    </div>
+  </div>
+
+  <!-- TALK FLOW -->
+  <section>
+    <div class="section-label">// 01 — Estructura de la Charla</div>
+    <h2>Talk Flow (30 min)</h2>
+    <div class="talk-flow">
+      <div class="flow-step">
+        <div class="flow-num">01</div>
+        <div class="flow-title">El Hook</div>
+        <div class="flow-time">0:00 — 0:03</div>
+        <div class="flow-desc">¿Cuántas horas perdiste comparando precios en 10 tabs? La audiencia ríe y se identifica. Ganaste su atención.</div>
+      </div>
+      <div class="flow-step">
+        <div class="flow-num">02</div>
+        <div class="flow-title">MCP = USB-C</div>
+        <div class="flow-time">0:03 — 0:08</div>
+        <div class="flow-desc">Analogía simple: MCP estandariza cómo los agentes usan herramientas, igual que USB-C estandarizó los cables. Sin código de integración custom.</div>
+      </div>
+      <div class="flow-step">
+        <div class="flow-num">03</div>
+        <div class="flow-title">AgentCore Overview</div>
+        <div class="flow-time">0:08 — 0:13</div>
+        <div class="flow-desc">Runtime para agentes, MCP para tools, Memory para contexto. "Escala sin manejar servidores." Muestra arquitectura.</div>
+      </div>
+      <div class="flow-step hot">
+        <div class="flow-num">04</div>
+        <div class="flow-title">🔴 DEMO LIVE</div>
+        <div class="flow-time">0:13 — 0:25</div>
+        <div class="flow-desc">Escribe "auriculares $80". Muestra productos REALES de MercadoLibre Chile con precios y URLs. Abre uno en el navegador. Es el momento que van a recordar.</div>
+      </div>
+      <div class="flow-step">
+        <div class="flow-num">05</div>
+        <div class="flow-title">Código en vivo</div>
+        <div class="flow-time">0:25 — 0:28</div>
+        <div class="flow-desc">Muestra el MCP server y el scraper. "Esto es lo que hace la magia." Credibilidad instantánea.</div>
+      </div>
+      <div class="flow-step">
+        <div class="flow-num">06</div>
+        <div class="flow-title">QR + Comunidad</div>
+        <div class="flow-time">0:28 — 0:30</div>
+        <div class="flow-desc">QR al repo en GitHub. Próximos meetups AWS Chile. La audiencia se lleva algo concreto.</div>
+      </div>
+    </div>
+  </section>
+
+
+  <!-- LIVE DEMO MOCKUP -->
+  <section>
+    <div class="section-label">// 02 — Lo que el Público Ve</div>
+    <h2>Demo en Pantalla (Datos Reales de MercadoLibre Chile)</h2>
+    <div class="mockup-wrap">
+      <div class="mockup-topbar">
+        <span class="app-name">🛒 ShopMind v2</span>
+        <span>powered by Amazon Bedrock AgentCore + MCP + Puppeteer</span>
+        <span class="live-dot"></span>
+      </div>
+      <div class="mockup-body">
+
+        <!-- Chat -->
+        <div class="chat-area">
+          <div class="msg user">
+            <div class="av u">tú</div>
+            <div class="bubble u">Quiero auriculares inalámbricos para estudiar. Presupuesto $80 USD. Que tengan buena cancelación de ruido.</div>
+          </div>
+          <div class="msg">
+            <div class="av a">🤖</div>
+            <div class="bubble a">Perfecto! Buscando en MercadoLibre Chile en tiempo real... ⏳</div>
+          </div>
+          <div class="msg">
+            <div class="av a">🤖</div>
+            <div class="bubble a">
+              Encontré estos productos REALES en MercadoLibre Chile:<br><br>
+              <span class="hi">① Sony WH-CH520 — $59.990 CLP (~$63 USD)</span> ⭐ 4.5<br>
+              &nbsp;&nbsp;Cancelación básica · 50h batería<br>
+              &nbsp;&nbsp;<a href="#" style="color:var(--green);font-size:0.65rem">mercadolibre.cl/MLC-123456</a><br><br>
+              <span class="oi">② Anker Q45 — $61.990 CLP (~$65 USD)</span> ⭐ 4.4<br>
+              &nbsp;&nbsp;ANC activo · muy recomendado para estudio<br>
+              &nbsp;&nbsp;<a href="#" style="color:var(--green);font-size:0.65rem">mercadolibre.cl/MLC-789012</a><br><br>
+              <span class="pi">③ JBL Tune 770NC — $74.990 CLP (~$79 USD)</span> ⭐ 4.6<br>
+              &nbsp;&nbsp;Cancelación híbrida · el favorito de estudiantes<br>
+              &nbsp;&nbsp;<a href="#" style="color:var(--green);font-size:0.65rem">mercadolibre.cl/MLC-345678</a><br><br>
+              <span class="rec">→ Mi recomendación: JBL Tune 770NC.</span><br>
+              Está casi en tu límite pero tiene la mejor cancelación del grupo. Puedes hacer clic en el link para verlo en MercadoLibre.
+            </div>
+          </div>
+        </div>
+
+        <!-- Tool Panel -->
+        <div class="tool-side">
+          <div class="tp-title">
+            🔴 MCP Tools en vivo
+            <span style="width:6px;height:6px;border-radius:50%;background:var(--green);margin-left:auto;animation:blink 1.5s infinite;display:inline-block;"></span>
+          </div>
+          <div class="tool-card ca1">
+            <div class="tc-name">🔍 web_search</div>
+            <div class="tc-tool">Puppeteer → MercadoLibre</div>
+            <div class="tc-status">Scraping "auriculares<br>inalambricos"<br>→ 47 productos</div>
+          </div>
+          <div class="tool-card ca2">
+            <div class="tc-name">💰 price_compare</div>
+            <div class="tc-tool">Filtro por presupuesto</div>
+            <div class="tc-status">Max $80 USD<br>→ 12 opciones válidas</div>
+          </div>
+          <div class="tool-card ca3">
+            <div class="tc-name">⭐ fetch_reviews</div>
+            <div class="tc-tool">Ordenar por rating</div>
+            <div class="tc-status">Filtro: rating > 4.0<br>→ Top 5 productos</div>
+          </div>
+          <div class="tool-card ca4">
+            <div class="tc-name">📊 user_memory</div>
+            <div class="tc-tool">AgentCore Memory</div>
+            <div class="tc-status">Guarda presupuesto<br>+ preferencias</div>
+          </div>
+          <div class="tp-note">
+            4 tools MCP expuestas por 1 servidor.<br>
+            Supervisor Agent (Strands) las orquesta.
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ARCHITECTURE -->
+  <section>
+    <div class="section-label">// 03 — Arquitectura v2 (Simplificada)</div>
+    <h2>Cómo está construido</h2>
+    <div class="arch">
+
+      <div class="arch-layer-label">CLIENTE — React App (Chat + Panel de Tools)</div>
+      <div class="arch-nodes">
+        <div class="arch-node an-user">👤 Usuario</div>
+        <div class="arch-arrow">→</div>
+        <div class="arch-node an-fe">React App<br><span style="font-size:0.55rem;opacity:0.5">Chat + ToolPanel</span></div>
+        <div class="arch-arrow">→</div>
+        <div class="arch-node an-fe">SSE Streaming<br><span style="font-size:0.55rem;opacity:0.5">eventos en tiempo real</span></div>
+      </div>
+
+      <div class="arch-conn">↓ &nbsp; invoca via HTTP &nbsp; ↓</div>
+
+      <div class="arch-layer-label">AGENTCORE RUNTIME — Supervisor Agent</div>
+      <div class="arch-nodes">
+        <div class="arch-node an-sup">🧠 Supervisor Agent<br><span style="font-size:0.55rem;opacity:0.6">Strands · Nova Pro</span></div>
+        <div class="arch-arrow">↔</div>
+        <div class="arch-node an-mcp">MCP Client<br><span style="font-size:0.55rem;opacity:0.5">conecta a tools</span></div>
+      </div>
+
+      <div class="arch-conn">↓ &nbsp; MCP Protocol &nbsp; ↓</div>
+
+      <div class="arch-layer-label">MCP SERVER — 4 Tools en 1 servidor</div>
+      <div class="arch-nodes">
+        <div class="arch-node an-mcp">mcp_server.py<br><span style="font-size:0.55rem;opacity:0.5">FastMCP · localhost:8001</span></div>
+      </div>
+      <div style="margin-top:0.5rem;font-family:'Space Mono',monospace;font-size:0.65rem;color:var(--muted);">
+        Tools: web_search, price_compare, fetch_reviews, user_memory
+      </div>
+
+      <div class="arch-conn">↓ &nbsp; invoca scraper &nbsp; ↓</div>
+
+      <div class="arch-layer-label">SCRAPER — Puppeteer (Node.js)</div>
+      <div class="arch-nodes">
+        <div class="arch-node an-scraper">scraper.js<br><span style="font-size:0.55rem;opacity:0.5">Puppeteer headless</span></div>
+        <div class="arch-arrow">→</div>
+        <div class="arch-node an-scraper">MercadoLibre Chile<br><span style="font-size:0.55rem;opacity:0.5">datos reales</span></div>
+      </div>
+
+      <div class="arch-divider"></div>
+
+      <div class="arch-layer-label">INFRAESTRUCTURA (Opcional para producción)</div>
+      <div class="arch-nodes">
+        <div class="arch-node an-infra">AgentCore Memory</div>
+        <div class="arch-node an-infra">AgentCore Observability<br>(CloudWatch)</div>
+        <div class="arch-node an-infra">Amazon Bedrock<br>Nova Pro</div>
+      </div>
+
+      <div style="margin-top:1rem;padding:1rem;background:rgba(126,232,162,0.05);border:1px solid rgba(126,232,162,0.2);">
+        <div style="font-family:'Space Mono',monospace;font-size:0.65rem;color:var(--green);margin-bottom:0.5rem;">💡 Ventaja de esta arquitectura:</div>
+        <div style="font-family:'Space Mono',monospace;font-size:0.62rem;color:var(--muted);line-height:1.7;">
+          • <strong style="color:var(--text)">Desarrollo local:</strong> Todo corre en localhost sin AWS<br>
+          • <strong style="color:var(--text)">Deploy opcional:</strong> Sube a AgentCore cuando estés listo<br>
+          • <strong style="color:var(--text)">Datos reales:</strong> Scraping de MercadoLibre Chile en tiempo real<br>
+          • <strong style="color:var(--text)">Simple:</strong> 1 agent + 1 MCP server + 1 scraper = fácil de entender
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- CODE SNIPPETS -->
+  <section>
+    <div class="section-label">// 04 — Código del Demo (v2)</div>
+    <h2>Key Code Snippets</h2>
+    <div class="code-grid">
+
+      <div class="code-panel">
+        <div class="code-title">supervisor_agent.py — El cerebro</div>
+        <pre><span class="cc"># Supervisor Agent conecta al MCP server</span>
+<span class="ci">from</span> <span class="cv">strands</span> <span class="ci">import</span> <span class="cv">Agent</span>
+<span class="ci">from</span> <span class="cv">strands.tools.mcp</span> <span class="ci">import</span> <span class="cv">MCPClient</span>
+<span class="ci">from</span> <span class="cv">bedrock_agentcore.runtime</span> <span class="ci">import</span> \
+    <span class="cv">BedrockAgentCoreApp</span>
+
+<span class="cv">app</span> = <span class="cf">BedrockAgentCoreApp</span>()
+
+<span class="cc"># Conecta al MCP server local</span>
+<span class="cv">mcp_client</span> = <span class="cf">MCPClient</span>(
+  <span class="ck">lambda</span>: <span class="cf">streamablehttp_client</span>(
+    <span class="cs">"http://localhost:8001/mcp"</span>
+  )
+)
+
+<span class="cv">agent</span> = <span class="cf">Agent</span>(
+  <span class="cv">model</span>=<span class="cs">"us.amazon.nova-pro-v1:0"</span>,
+  <span class="cv">system_prompt</span>=<span class="cs">"""Eres ShopMind.
+  Tus herramientas buscan productos
+  REALES en MercadoLibre Chile.
+  
+  Muestra siempre los URLs completos
+  para que el usuario pueda hacer clic.
+  
+  Responde en español."""</span>,
+  <span class="cv">tools</span>=[<span class="cv">mcp_client</span>]  <span class="cc"># MCP tools</span>
+)
+
+<span class="cd">@app.entrypoint</span>
+<span class="ck">async def</span> <span class="cf">handle</span>(<span class="cv">payload</span>):
+  <span class="ck">async for</span> <span class="cv">chunk</span> <span class="ck">in</span> \
+    <span class="cv">agent</span>.<span class="cf">stream_async</span>(
+      <span class="cv">payload</span>[<span class="cs">"message"</span>],
+      <span class="cv">session_id</span>=<span class="cv">payload</span>.<span class="cf">get</span>(<span class="cs">"session_id"</span>)
+    ):
+    <span class="ck">yield</span> <span class="cv">chunk</span></pre>
+      </div>
+
+      <div class="code-panel">
+        <div class="code-title">mcp_server.py — 4 tools en 1 servidor</div>
+        <pre><span class="cc"># FastMCP server con 4 tools</span>
+<span class="ci">from</span> <span class="cv">mcp.server.fastmcp</span> <span class="ci">import</span> <span class="cv">FastMCP</span>
+<span class="ci">import</span> <span class="cv">subprocess</span>, <span class="cv">json</span>
+
+<span class="cv">mcp</span> = <span class="cf">FastMCP</span>(<span class="cs">"shopmind-tools"</span>)
+
+<span class="ck">def</span> <span class="cf">_scrape</span>(<span class="cv">query</span>, <span class="cv">limit</span>=<span class="cd">10</span>):
+  <span class="cs">"""Llama al scraper de Puppeteer"""</span>
+  <span class="cv">result</span> = <span class="cv">subprocess</span>.<span class="cf">run</span>(
+    [<span class="cs">"node"</span>, <span class="cs">"scraper.js"</span>, <span class="cv">query</span>, <span class="cf">str</span>(<span class="cv">limit</span>)],
+    <span class="cv">capture_output</span>=<span class="cd">True</span>, <span class="cv">text</span>=<span class="cd">True</span>
+  )
+  <span class="ck">return</span> <span class="cv">json</span>.<span class="cf">loads</span>(<span class="cv">result</span>.<span class="cv">stdout</span>)
+
+<span class="cd">@mcp.tool()</span>
+<span class="ck">async def</span> <span class="cf">web_search</span>(<span class="cv">query</span>: <span class="cv">str</span>) -> <span class="cv">str</span>:
+  <span class="cs">"""Busca productos en MercadoLibre"""</span>
+  <span class="cv">products</span> = <span class="cf">_scrape</span>(<span class="cv">query</span>)
+  <span class="ck">return</span> <span class="cv">json</span>.<span class="cf">dumps</span>(<span class="cv">products</span>)
+
+<span class="cd">@mcp.tool()</span>
+<span class="ck">async def</span> <span class="cf">price_compare</span>(
+  <span class="cv">product_name</span>: <span class="cv">str</span>,
+  <span class="cv">max_price_usd</span>: <span class="cv">float</span>
+) -> <span class="cv">str</span>:
+  <span class="cs">"""Filtra por presupuesto"""</span>
+  <span class="cv">products</span> = <span class="cf">_scrape</span>(<span class="cv">product_name</span>)
+  <span class="cv">filtered</span> = [<span class="cv">p</span> <span class="ck">for</span> <span class="cv">p</span> <span class="ck">in</span> <span class="cv">products</span>
+    <span class="ck">if</span> <span class="cv">p</span>[<span class="cs">"price_usd"</span>] <= <span class="cv">max_price_usd</span>]
+  <span class="ck">return</span> <span class="cv">json</span>.<span class="cf">dumps</span>(<span class="cv">filtered</span>)
+
+<span class="cc"># + fetch_reviews, user_memory...</span></pre>
+      </div>
+
+      <div class="code-panel">
+        <div class="code-title">scraper.js — Puppeteer scraper</div>
+        <pre><span class="cc">// Scraper de MercadoLibre Chile</span>
+<span class="ck">const</span> <span class="cv">puppeteer</span> = <span class="cf">require</span>(<span class="cs">'puppeteer'</span>);
+
+(<span class="ck">async</span> () => {
+  <span class="ck">const</span> <span class="cv">query</span> = <span class="cv">process</span>.<span class="cv">argv</span>[<span class="cd">2</span>];
+  <span class="ck">const</span> <span class="cv">limit</span> = <span class="cv">process</span>.<span class="cv">argv</span>[<span class="cd">3</span>] || <span class="cd">10</span>;
+  
+  <span class="ck">const</span> <span class="cv">browser</span> = <span class="ck">await</span> <span class="cv">puppeteer</span>.<span class="cf">launch</span>({
+    <span class="cv">headless</span>: <span class="cd">true</span>
+  });
+  
+  <span class="ck">const</span> <span class="cv">page</span> = <span class="ck">await</span> <span class="cv">browser</span>.<span class="cf">newPage</span>();
+  
+  <span class="cc">// Busca en MercadoLibre Chile</span>
+  <span class="ck">await</span> <span class="cv">page</span>.<span class="cf">goto</span>(
+    <span class="cs">`https://listado.mercadolibre.cl/</span><span class="ci">${query}</span><span class="cs">`</span>
+  );
+  
+  <span class="cc">// Extrae productos</span>
+  <span class="ck">const</span> <span class="cv">products</span> = <span class="ck">await</span> <span class="cv">page</span>.<span class="cf">evaluate</span>(() => {
+    <span class="ck">return</span> <span class="cv">Array</span>.<span class="cf">from</span>(
+      <span class="cv">document</span>.<span class="cf">querySelectorAll</span>(<span class="cs">'.ui-search-result'</span>)
+    ).<span class="cf">map</span>(<span class="cv">el</span> => ({
+      <span class="cv">title</span>: <span class="cv">el</span>.<span class="cf">querySelector</span>(<span class="cs">'.ui-search-item__title'</span>)
+        ?.<span class="cv">textContent</span>,
+      <span class="cv">price_clp</span>: <span class="cf">parseFloat</span>(
+        <span class="cv">el</span>.<span class="cf">querySelector</span>(<span class="cs">'.price-tag-amount'</span>)
+          ?.<span class="cv">textContent</span>.<span class="cf">replace</span>(<span class="cs">/\D/g</span>, <span class="cs">''</span>)
+      ),
+      <span class="cv">url</span>: <span class="cv">el</span>.<span class="cf">querySelector</span>(<span class="cs">'a'</span>)?.<span class="cv">href</span>,
+      <span class="cv">rating</span>: <span class="cf">parseFloat</span>(
+        <span class="cv">el</span>.<span class="cf">querySelector</span>(<span class="cs">'.ui-search-reviews__rating'</span>)
+          ?.<span class="cv">textContent</span>
+      )
+    }));
+  });
+  
+  <span class="cv">console</span>.<span class="cf">log</span>(<span class="cv">JSON</span>.<span class="cf">stringify</span>(<span class="cv">products</span>.<span class="cf">slice</span>(<span class="cd">0</span>, <span class="cv">limit</span>)));
+  <span class="ck">await</span> <span class="cv">browser</span>.<span class="cf">close</span>();
+})();</pre>
+      </div>
+
+      <div class="code-panel">
+        <div class="code-title">Correr todo localmente</div>
+        <pre><span class="cc"># Terminal 1: MCP Server</span>
+<span class="cf">python3</span> mcp_server.py
+<span class="cc"># → http://localhost:8001</span>
+
+<span class="cc"># Terminal 2: Backend local</span>
+<span class="cf">python3</span> backend_local.py
+<span class="cc"># → http://localhost:8000</span>
+
+<span class="cc"># Terminal 3: Frontend</span>
+<span class="cf">cd</span> frontend && <span class="cf">npm run dev</span>
+<span class="cc"># → http://localhost:5173</span>
+
+<span class="cc"># ¡Listo! Todo corre sin AWS</span>
+<span class="cc"># Cuando quieras deploy:</span>
+<span class="cf">agentcore deploy</span></pre>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- WOW MOMENTS -->
+  <section>
+    <div class="section-label">// 05 — Los Momentos Wow</div>
+    <h2>Lo que van a recordar</h2>
+    <div class="wow-grid">
+      <div class="wow-item">
+        <span class="wow-emoji">🛒</span>
+        <div class="wow-num">WOW 01</div>
+        <div class="wow-title">Productos REALES</div>
+        <div class="wow-desc">No son datos mock. Son productos reales de MercadoLibre Chile con precios actuales. Haz clic en el URL y lo ves en el sitio.</div>
+      </div>
+      <div class="wow-item">
+        <span class="wow-emoji">⚡</span>
+        <div class="wow-num">WOW 02</div>
+        <div class="wow-title">Scraping en vivo</div>
+        <div class="wow-desc">Puppeteer scrapeando MercadoLibre en tiempo real. La audiencia ve cómo se obtienen los datos mientras hablas.</div>
+      </div>
+      <div class="wow-item">
+        <span class="wow-emoji">🏠</span>
+        <div class="wow-num">WOW 03</div>
+        <div class="wow-title">Todo local primero</div>
+        <div class="wow-desc">No necesitas AWS para desarrollar. Corre todo en localhost. Deploy a AgentCore es opcional cuando estés listo.</div>
+      </div>
+      <div class="wow-item">
+        <span class="wow-emoji">🎯</span>
+        <div class="wow-num">WOW 04</div>
+        <div class="wow-title">Arquitectura simple</div>
+        <div class="wow-desc">1 agent + 1 MCP server + 1 scraper. Fácil de entender, fácil de mantener, fácil de extender.</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- REPO REFERENCE -->
+  <div class="repo-box">
+    <div>
+      <div class="label">Código completo en GitHub</div>
+      <div class="url">github.com/tu-usuario/shopmind-chile</div>
+      <div class="note">Todo el código: supervisor agent, MCP server, Puppeteer scraper, frontend React. Listo para clonar y correr.</div>
+    </div>
+  </div>
+
+  <!-- TIPS -->
+  <section>
+    <div class="section-label">// 06 — Tips para el Demo en Vivo</div>
+    <h2>Pro Tips 🎤</h2>
+    <div class="tips">
+      <div class="tip">
+        <div class="tip-icon">🧪</div>
+        <div>
+          <h4>Prueba el scraper antes</h4>
+          <p>Corre el scraper 30 min antes de la charla para verificar que MercadoLibre no cambió su HTML. Ten un backup de datos si falla.</p>
+        </div>
+      </div>
+      <div class="tip">
+        <div class="tip-icon">🔴</div>
+        <div>
+          <h4>Demo local, no AWS</h4>
+          <p>Corre todo en localhost para el demo. Es más rápido, más confiable, y no dependes de internet o cold starts.</p>
+        </div>
+      </div>
+      <div class="tip">
+        <div class="tip-icon">🌎</div>
+        <div>
+          <h4>Productos chilenos</h4>
+          <p>Busca productos que la audiencia chilena reconozca: "notebook gamer", "zapatillas running", "cafetera". Se conectan más.</p>
+        </div>
+      </div>
+      <div class="tip">
+        <div class="tip-icon">🔗</div>
+        <div>
+          <h4">Abre un producto en vivo</h4>
+          <p>Haz clic en uno de los URLs que devuelve el agente y ábrelo en MercadoLibre. Eso demuestra que son datos 100% reales.</p>
+        </div>
+      </div>
+      <div class="tip">
+        <div class="tip-icon">💬</div>
+        <div>
+          <h4>Muestra el código del scraper</h4>
+          <p>Abre scraper.js y muestra las 20 líneas de Puppeteer. "Esto es lo que hace la magia." La gente técnica lo aprecia.</p>
+        </div>
+      </div>
+      <div class="tip">
+        <div class="tip-icon">📊</div>
+        <div>
+          <h4>Menciona la simplicidad</h4>
+          <p>"Antes tenía 4 agentes separados. Ahora 1 agent + 1 MCP server. Más simple = más fácil de mantener." Eso resuena.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- TAGS -->
+  <section style="padding-top:0.5rem; padding-bottom:1rem;">
+    <div class="section-label">// Stack Completo v2</div>
+    <div style="margin-top:0.5rem;">
+      <span class="tag">Amazon Bedrock</span>
+      <span class="tag">AgentCore Runtime</span>
+      <span class="tag">AgentCore Memory</span>
+      <span class="tag">MCP Protocol</span>
+      <span class="tag">FastMCP</span>
+      <span class="tag">Strands Agent</span>
+      <span class="tag">Puppeteer</span>
+      <span class="tag">Node.js</span>
+      <span class="tag">MercadoLibre Chile</span>
+      <span class="tag">Amazon Nova Pro</span>
+      <span class="tag">React + SSE</span>
+      <span class="tag">Python 3.12</span>
+      <span class="tag">Local-first</span>
+    </div>
+  </section>
+
+  <footer>
+    <div>AWS Community · Nerdearla Chile 2025 · Level 200 · 30 min · ShopMind v2 (datos reales)</div>
+    <div class="right">Construido con Kiro AI IDE</div>
+  </footer>
+
+</div>
+</body>
+</html>
